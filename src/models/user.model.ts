@@ -6,10 +6,10 @@ export interface IUser {
   lastName: string
   email: string
   password: string
-  image: string
-  friends: Types.ObjectId[]
-  friendRequests: Types.ObjectId[]
-  posts: Types.ObjectId[]
+  image?: string
+  friends?: Types.ObjectId[]
+  friendRequests?: Types.ObjectId[]
+  posts?: Types.ObjectId[]
 }
 
 const userSchema = new Schema<IUser>({

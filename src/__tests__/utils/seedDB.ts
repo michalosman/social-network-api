@@ -10,7 +10,7 @@ export const seedDb = async () => {
   const posts: HydratedDocument<IPost>[] = []
   const comments: HydratedDocument<IComment>[] = []
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 10; i++) {
     const user = await createFakeUser()
     const post = await createFakePost(user)
     const comment = await createFakeComment(user)

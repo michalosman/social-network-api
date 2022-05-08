@@ -113,12 +113,12 @@ describe('User API tests', () => {
     })
 
     describe('given the password is wrong', () => {
-      it('should return a 400 error code', async () => {
+      it('should return a 401 error code', async () => {
         const { status } = await request(app)
           .post('/api/users/login')
           .send(userPayload.wrongPasswordLogin)
 
-        expect(status).toBe(400)
+        expect(status).toBe(401)
       })
     })
   })

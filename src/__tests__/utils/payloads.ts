@@ -1,13 +1,16 @@
 export const userPayload = {
   expectedOutput: {
-    _id: expect.any(String),
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@gmail.com',
-    image: expect.any(String),
-    friends: expect.any(Array),
-    friendRequests: expect.any(Array),
-    posts: expect.any(Array),
+    data: {
+      _id: expect.any(String),
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@gmail.com',
+      image: expect.any(String),
+      friends: expect.any(Array),
+      friendRequests: expect.any(Array),
+      posts: expect.any(Array),
+      __v: expect.any(Number),
+    },
   },
 
   validRegistration: {

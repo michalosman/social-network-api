@@ -12,7 +12,13 @@ export interface IUser {
   posts?: Types.ObjectId[]
 }
 
-const userSchema = new Schema<IUser>({
+export interface UserDocument extends IUser {
+  createdAt: Date
+  updatedAt: Date
+  isPasswordValid: (password: string) => Promise<boolean>
+}
+
+const userSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -30,7 +36,10 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
-  image: String,
+  image: {
+    type: String,
+    default: '',
+  },
   friends: [
     {
       type: Schema.Types.ObjectId,
@@ -64,6 +73,6 @@ userSchema.methods.isPasswordValid = async function (password: string) {
   return await bcrypt.compare(password, this.password)
 }
 
-const UserModel = model<IUser>('User', userSchema)
+const UserModel = model<UserDocument>('User', userSchema)
 
 export default UserModel

@@ -1,12 +1,27 @@
-import { IUser } from './../models/user.model'
+import { Unauthorized } from './../utils/errors'
+import { Conflict, NotFound } from '../utils/errors'
+import UserModel, { IUser } from './../models/user.model'
+import 'express-async-errors'
+import _ from 'lodash'
 
 export default class UserService {
   static async register(user: IUser) {
-    // TODO
+    const doesExist = await UserModel.findOne({ email: user.email })
+    if (doesExist) throw new Conflict('User already exists')
+
+    const newUser = await UserModel.create(user)
+
+    return _.omit(newUser.toJSON(), ['password'])
   }
 
   static async login(email: string, password: string) {
-    // TODO
+    const user = await UserModel.findOne({ email })
+    if (!user) throw new NotFound('User does not exist')
+
+    const isPasswordValid = await user.isPasswordValid(password)
+    if (!isPasswordValid) throw new Unauthorized('Invalid password')
+
+    return _.omit(user.toJSON(), ['password'])
   }
 
   static async getAll() {

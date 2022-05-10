@@ -6,6 +6,7 @@ export const userPayload = {
       lastName: 'Doe',
       email: 'john.doe@gmail.com',
       image: expect.any(String),
+      sessions: expect.any(Array),
       friends: expect.any(Array),
       friendRequests: expect.any(Array),
       posts: expect.any(Array),

@@ -6,16 +6,17 @@ export interface IUser {
   lastName: string
   email: string
   password: string
-  image?: string
-  friends?: Types.ObjectId[]
-  friendRequests?: Types.ObjectId[]
-  posts?: Types.ObjectId[]
+  image: string
+  sessions: string[]
+  friends: Types.ObjectId[]
+  friendRequests: Types.ObjectId[]
+  posts: Types.ObjectId[]
 }
 
 export interface UserDocument extends IUser {
   createdAt: Date
   updatedAt: Date
-  isPasswordValid: (password: string) => Promise<boolean>
+  comparePassword: (password: string) => Promise<boolean>
 }
 
 const userSchema = new Schema({
@@ -40,6 +41,11 @@ const userSchema = new Schema({
     type: String,
     default: '',
   },
+  sessions: [
+    {
+      type: String,
+    },
+  ],
   friends: [
     {
       type: Schema.Types.ObjectId,
@@ -69,7 +75,7 @@ userSchema.pre('save', async function (next) {
   return next()
 })
 
-userSchema.methods.isPasswordValid = async function (password: string) {
+userSchema.methods.comparePassword = async function (password: string) {
   return await bcrypt.compare(password, this.password)
 }
 

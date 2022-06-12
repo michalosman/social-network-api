@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { MONGO_URI } from './secrets'
+import { MONGO_URI } from './constants'
 
 export const connectDatabase = async () => {
   try {

@@ -4,7 +4,6 @@ import { Unauthorized } from './../utils/errors'
 import { Conflict, NotFound } from '../utils/errors'
 import UserModel, { IUser } from './../models/user.model'
 import { signAccessToken, signRefreshToken } from '../utils/jwt'
-import 'express-async-errors'
 
 export default class UserService {
   static async register(user: IUser) {
@@ -36,9 +35,9 @@ export default class UserService {
     }
   }
 
-  static async logout(id: string, refreshToken: string) {
+  static async logout(userId: string, refreshToken: string) {
     const user = await UserModel.findByIdAndUpdate(
-      id,
+      userId,
       {
         $pull: { sessions: refreshToken },
       },
@@ -52,9 +51,9 @@ export default class UserService {
     return sanitizeUser(user)
   }
 
-  static async logoutAll(id: string) {
+  static async logoutAll(userId: string) {
     const user = await UserModel.findByIdAndUpdate(
-      id,
+      userId,
       {
         $set: { sessions: [] },
       },
@@ -68,20 +67,17 @@ export default class UserService {
     return sanitizeUser(user)
   }
 
-  static async validateSession(id: string, refreshToken: string) {
-    const user = await UserModel.findById(id)
-    if (!user) throw new NotFound('User not found')
-    const isSessionValid = user.sessions.find((token) => token === refreshToken)
-    return Boolean(isSessionValid)
-  }
-
   static async getAll() {
     const users = await UserModel.find()
     return sanitizeUsers(users)
   }
 
-  static async get(id: string) {
-    // TODO
+  static async get(userId: string) {
+    const user = await UserModel.findById(userId)
+
+    if (!user) throw new NotFound('User not found')
+
+    return sanitizeUser(user)
   }
 
   static async requestFriend(requesterId: string, requestedId: string) {

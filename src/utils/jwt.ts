@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, REFRESH_TOKEN } from './../configs/secrets'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
 import jwt from 'jsonwebtoken'
 
 export const signAccessToken = (id: string) => {

@@ -7,10 +7,10 @@ export interface IUser {
   email: string
   password: string
   image: string
-  sessions: string[]
   friends: Types.ObjectId[]
   friendRequests: Types.ObjectId[]
   posts: Types.ObjectId[]
+  sessions: string[]
 }
 
 export interface UserDocument extends IUser {
@@ -41,11 +41,6 @@ const userSchema = new Schema({
     type: String,
     default: '',
   },
-  sessions: [
-    {
-      type: String,
-    },
-  ],
   friends: [
     {
       type: Schema.Types.ObjectId,
@@ -62,6 +57,11 @@ const userSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'Post',
+    },
+  ],
+  sessions: [
+    {
+      type: String,
     },
   ],
 })

@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import {
   verifyAccessToken,
   verifyRefreshToken,
   signAccessToken,
 } from './../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
-import UserService from '../services/user.service'
+import UserModel from '../models/user.model'
+import { NotFound } from '../utils/errors'
+import { ACCESS_TOKEN } from '../configs/constants'
 
 const validateToken = async (
   req: Request,
@@ -13,9 +17,7 @@ const validateToken = async (
 ) => {
   const { accessToken, refreshToken } = req.cookies
 
-  if (!accessToken || !refreshToken) {
-    return next()
-  }
+  if (!accessToken || !refreshToken) return next()
 
   const { payload: accessPayload, expired: accessExpired } =
     verifyAccessToken(accessToken)
@@ -25,37 +27,40 @@ const validateToken = async (
     return next()
   }
 
-  if (!accessExpired) {
-    return next()
-  }
+  if (accessExpired) {
+    const { payload: refreshPayload } = verifyRefreshToken(refreshToken)
 
-  const { payload: refreshPayload } = verifyRefreshToken(refreshToken)
+    if (!refreshPayload) return next()
 
-  if (!refreshPayload) {
-    return next()
-  }
-
-  const isSessionValid = await UserService.validateSession(
     // @ts-ignore
-    refreshPayload.id,
-    refreshToken
-  )
+    const { id: userId } = refreshPayload
 
-  if (!isSessionValid) {
+    const isSessionValid = await validateSession(userId, refreshToken)
+
+    if (!isSessionValid) return next()
+
+    const newAccessToken = signAccessToken(userId)
+
+    res.cookie('accessToken', newAccessToken, {
+      maxAge: ACCESS_TOKEN.COOKIE_TTL,
+      httpOnly: true,
+    })
+
+    res.locals.user = refreshPayload
+
     return next()
   }
-
-  // @ts-ignore
-  const newAccessToken = signAccessToken(refreshPayload.id)
-
-  res.cookie('accessToken', newAccessToken, {
-    maxAge: 300000, // 5 minutes
-    httpOnly: true,
-  })
-
-  res.locals.user = verifyAccessToken(newAccessToken).payload
 
   return next()
+}
+
+const validateSession = async (userId: string, refreshToken: string) => {
+  const user = await UserModel.findById(userId)
+  if (!user) throw new NotFound('User not found')
+
+  const isSessionValid = user.sessions.find((token) => token === refreshToken)
+
+  return Boolean(isSessionValid)
 }
 
 export default validateToken

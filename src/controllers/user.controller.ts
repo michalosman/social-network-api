@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import UserService from '../services/user.service'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
 
 export default class UserController {
   static async register(req: Request, res: Response) {
@@ -16,12 +17,12 @@ export default class UserController {
     )
 
     res.cookie('accessToken', accessToken, {
-      maxAge: 300000, // 5 minutes
+      maxAge: ACCESS_TOKEN.COOKIE_TTL,
       httpOnly: true,
     })
 
     res.cookie('refreshToken', refreshToken, {
-      maxAge: 3.155e10, // 1 year
+      maxAge: REFRESH_TOKEN.COOKIE_TTL,
       httpOnly: true,
     })
 
@@ -48,7 +49,9 @@ export default class UserController {
   }
 
   static async logoutAll(req: Request, res: Response) {
-    const user = await UserService.logoutAll(res.locals.user.id)
+    const { id } = res.locals.user
+
+    const user = await UserService.logoutAll(id)
 
     res.cookie('accessToken', '', {
       maxAge: 0,
@@ -67,7 +70,9 @@ export default class UserController {
   }
 
   static async get(req: Request, res: Response) {
-    // TODO
+    const { id } = req.body
+    const user = await UserService.get(id)
+    res.json({ data: user })
   }
 
   static async requestFriend(req: Request, res: Response) {

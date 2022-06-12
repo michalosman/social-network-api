@@ -8,13 +8,15 @@ export const MONGO_URI =
     : (process.env.MONGO_URI_DEV as string)
 
 export const ACCESS_TOKEN = {
-  TTL: process.env.ACCESS_TOKEN_TTL || '',
+  TTL: '5s',
+  COOKIE_TTL: 3.155e10, // 1 year
   PRIVATE_KEY: process.env.ACCESS_TOKEN_PRIVATE_KEY || '',
   PUBLIC_KEY: process.env.ACCESS_TOKEN_PUBLIC_KEY || '',
 }
 
 export const REFRESH_TOKEN = {
-  TTL: process.env.REFRESH_TOKEN_TTL || '',
+  TTL: '365d',
+  COOKIE_TTL: 3.155e10, // 1 year
   PRIVATE_KEY: process.env.REFRESH_TOKEN_PRIVATE_KEY || '',
   PUBLIC_KEY: process.env.REFRESH_TOKEN_PUBLIC_KEY || '',
 }

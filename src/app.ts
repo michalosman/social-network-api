@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser'
 import errorHandler from './middlewares/errorHandler'
 import validateToken from './middlewares/validateToken'
 import userRouter from './routes/user.route'
-import 'express-async-errors'
 
 const app = express()
 

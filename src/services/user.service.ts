@@ -4,6 +4,7 @@ import { Unauthorized } from './../utils/errors'
 import { Conflict, NotFound } from '../utils/errors'
 import UserModel, { IUser } from './../models/user.model'
 import { signAccessToken, signRefreshToken } from '../utils/jwt'
+import 'express-async-errors'
 
 export default class UserService {
   static async register(user: IUser) {

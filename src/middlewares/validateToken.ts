@@ -9,6 +9,7 @@ import { Request, Response, NextFunction } from 'express'
 import UserModel from '../models/user.model'
 import { NotFound } from '../utils/errors'
 import { ACCESS_TOKEN } from '../configs/constants'
+import 'express-async-errors'
 
 const validateToken = async (
   req: Request,

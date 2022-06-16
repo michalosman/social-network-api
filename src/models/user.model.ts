@@ -6,13 +6,20 @@ export interface IUser {
   lastName: string
   email: string
   password: string
-  image?: string
-  friends?: Types.ObjectId[]
-  friendRequests?: Types.ObjectId[]
-  posts?: Types.ObjectId[]
+  image: string
+  friends: Types.ObjectId[]
+  friendRequests: Types.ObjectId[]
+  posts: Types.ObjectId[]
+  sessions: string[]
 }
 
-const userSchema = new Schema<IUser>({
+export interface UserDocument extends IUser {
+  createdAt: Date
+  updatedAt: Date
+  comparePassword: (password: string) => Promise<boolean>
+}
+
+const userSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -30,7 +37,10 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
-  image: String,
+  image: {
+    type: String,
+    default: '',
+  },
   friends: [
     {
       type: Schema.Types.ObjectId,
@@ -49,6 +59,11 @@ const userSchema = new Schema<IUser>({
       ref: 'Post',
     },
   ],
+  sessions: [
+    {
+      type: String,
+    },
+  ],
 })
 
 userSchema.pre('save', async function (next) {
@@ -60,10 +75,10 @@ userSchema.pre('save', async function (next) {
   return next()
 })
 
-userSchema.methods.isPasswordValid = async function (password: string) {
+userSchema.methods.comparePassword = async function (password: string) {
   return await bcrypt.compare(password, this.password)
 }
 
-const UserModel = model<IUser>('User', userSchema)
+const UserModel = model<UserDocument>('User', userSchema)
 
 export default UserModel

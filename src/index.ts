@@ -1,7 +1,7 @@
 import http from 'http'
 import app from './app'
 import { connectDatabase } from './configs/database'
-import { PORT } from './configs/secrets'
+import { PORT } from './configs/constants'
 
 const server = http.createServer(app)
 

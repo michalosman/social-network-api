@@ -8,6 +8,7 @@ export const userPayload = {
     friends: expect.any(Array),
     friendRequests: expect.any(Array),
     posts: expect.any(Array),
+    __v: expect.any(Number),
   },
 
   validRegistration: {

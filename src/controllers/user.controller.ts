@@ -5,7 +5,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
 export default class UserController {
   static async register(req: Request, res: Response) {
     const user = await UserService.register(req.body)
-    res.json({ data: user })
+    res.json(user)
   }
 
   static async login(req: Request, res: Response) {
@@ -26,7 +26,7 @@ export default class UserController {
       httpOnly: true,
     })
 
-    res.json({ data: user })
+    res.json(user)
   }
 
   static async logout(req: Request, res: Response) {
@@ -45,7 +45,7 @@ export default class UserController {
       httpOnly: true,
     })
 
-    res.json({ data: user })
+    res.json(user)
   }
 
   static async logoutAll(req: Request, res: Response) {
@@ -61,18 +61,18 @@ export default class UserController {
       maxAge: 0,
     })
 
-    res.json({ data: user })
+    res.json(user)
   }
 
   static async getAll(req: Request, res: Response) {
     const users = await UserService.getAll()
-    res.json({ data: users })
+    res.json(users)
   }
 
   static async get(req: Request, res: Response) {
-    const { id } = req.body
+    const { id } = req.params
     const user = await UserService.get(id)
-    res.json({ data: user })
+    res.json(user)
   }
 
   static async requestFriend(req: Request, res: Response) {

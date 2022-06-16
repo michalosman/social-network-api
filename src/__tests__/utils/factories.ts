@@ -27,6 +27,5 @@ export const createFakeComment = async (user: HydratedDocument<IUser>) => {
     text: faker.lorem.paragraph(),
     author: user._id,
   })
-
   return await comment.save()
 }

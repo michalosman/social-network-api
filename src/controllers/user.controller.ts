@@ -76,7 +76,12 @@ export default class UserController {
   }
 
   static async requestFriend(req: Request, res: Response) {
-    // TODO
+    const { id: userId } = res.locals.user
+    const { id: requestedId } = req.params
+
+    const requested = await UserService.requestFriend(userId, requestedId)
+
+    res.json(requested)
   }
 
   static async acceptFriend(req: Request, res: Response) {

@@ -1,6 +1,6 @@
 import { sanitizeUsers } from './../utils/sanitization'
 import { sanitizeUser } from '../utils/sanitization'
-import { Unauthorized } from './../utils/errors'
+import { BadRequest, Unauthorized } from './../utils/errors'
 import { Conflict, NotFound } from '../utils/errors'
 import UserModel, { IUser } from './../models/user.model'
 import { signAccessToken, signRefreshToken } from '../utils/jwt'
@@ -81,19 +81,40 @@ export default class UserService {
     return sanitizeUser(user)
   }
 
-  static async requestFriend(requesterId: string, requestedId: string) {
+  static async requestFriend(userId: string, requestedId: string) {
+    if (userId === requestedId)
+      throw new BadRequest('Cannot request friend with yourself')
+
+    const user = await UserModel.findById(userId)
+    const requested = await UserModel.findById(requestedId)
+
+    if (!user || !requested) throw new NotFound('User not found')
+
+    if (user.friends.includes(requested._id))
+      throw new Conflict('Already friends')
+
+    if (
+      requested.friendRequests.includes(user._id) ||
+      user.friendRequests.includes(requested._id)
+    )
+      throw new Conflict('Already requested')
+
+    requested.friendRequests = [...requested.friendRequests, user._id]
+    await requested.save()
+
+    return sanitizeUser(requested)
+  }
+
+  static async acceptFriend(userId: string, acceptedId: string) {
+    // TODO
+    //
+  }
+
+  static async rejectFriend(userId: string, rejectedId: string) {
     // TODO
   }
 
-  static async acceptFriend(accepterId: string, acceptedId: string) {
-    // TODO
-  }
-
-  static async rejectFriend(rejecterId: string, rejectedId: string) {
-    // TODO
-  }
-
-  static async removeFriend(removerId: string, removedId: string) {
+  static async removeFriend(userId: string, removedId: string) {
     // TODO
   }
 }

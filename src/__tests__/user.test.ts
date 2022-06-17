@@ -236,7 +236,7 @@ describe('User API tests', () => {
         const user2 = users[1]
 
         const { status } = await api
-          .patch(`/api/users/${user2._id}/request`)
+          .patch(`/api/users/${user2._id}/friend/request`)
           .set('Cookie', user1.cookies)
 
         expect(status).toBe(200)
@@ -249,31 +249,60 @@ describe('User API tests', () => {
         const fakeId = new Types.ObjectId()
 
         const { status } = await api
-          .patch(`/api/users/${fakeId}/request`)
+          .patch(`/api/users/${fakeId}/friend/request`)
           .set('Cookie', user1.cookies)
 
         expect(status).toBe(404)
       })
     })
 
-    describe('given the users are already friends', () => {
+    describe('given the user wants to request self friendship', () => {
       it('should return 400 error code', async () => {
+        const user1 = users[0]
+
+        const { status } = await api
+          .patch(`/api/users/${user1._id}/friend/request`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(400)
+      })
+    })
+
+    describe('given the users are already friends', () => {
+      it('should return 409 error code', async () => {
         const user1 = users[0]
         const user2 = users[1]
 
         await api
-          .patch(`/api/users/${user2._id}/request`)
+          .patch(`/api/users/${user2._id}/friend/request`)
           .set('Cookie', user1.cookies)
 
         await api
-          .patch(`/api/users/${user1._id}/accept`)
+          .patch(`/api/users/${user1._id}/friend/accept`)
           .set('Cookie', user2.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${user2._id}/request`)
+          .patch(`/api/users/${user2._id}/friend/request`)
           .set('Cookie', user1.cookies)
 
-        expect(status).toBe(400)
+        expect(status).toBe(409)
+      })
+    })
+
+    describe('given the friend request is pending', () => {
+      it('should return 409 error code', async () => {
+        const user1 = users[0]
+        const user2 = users[1]
+
+        await api
+          .patch(`/api/users/${user2._id}/friend/request`)
+          .set('Cookie', user1.cookies)
+
+        const { status } = await api
+          .patch(`/api/users/${user2._id}/friend/request`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(409)
       })
     })
   })
@@ -285,11 +314,11 @@ describe('User API tests', () => {
         const user2 = users[3]
 
         await api
-          .patch(`/api/users/${user2._id}/request`)
+          .patch(`/api/users/${user2._id}/friend/request`)
           .set('Cookie', user1.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${user1._id}/accept`)
+          .patch(`/api/users/${user1._id}/friend/accept`)
           .set('Cookie', user2.cookies)
 
         expect(status).toBe(200)
@@ -302,7 +331,7 @@ describe('User API tests', () => {
         const fakeId = new Types.ObjectId()
 
         const { status } = await api
-          .patch(`/api/users/${fakeId}/accept`)
+          .patch(`/api/users/${fakeId}/friend/accept`)
           .set('Cookie', user1.cookies)
 
         expect(status).toBe(404)
@@ -310,15 +339,15 @@ describe('User API tests', () => {
     })
 
     describe('given the users do not have a pending request', () => {
-      it('should return 404 error code', async () => {
+      it('should return 409 error code', async () => {
         const user1 = users[4]
         const user2 = users[5]
 
         const { status } = await api
-          .patch(`/api/users/${user2._id}/accept`)
+          .patch(`/api/users/${user2._id}/friend/accept`)
           .set('Cookie', user1.cookies)
 
-        expect(status).toBe(404)
+        expect(status).toBe(409)
       })
     })
   })
@@ -330,11 +359,11 @@ describe('User API tests', () => {
         const user2 = users[5]
 
         await api
-          .patch(`/api/users/${user2._id}/request`)
+          .patch(`/api/users/${user2._id}/friend/request`)
           .set('Cookie', user1.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${user1._id}/reject`)
+          .patch(`/api/users/${user1._id}/friend/reject`)
           .set('Cookie', user2.cookies)
 
         expect(status).toBe(200)
@@ -347,7 +376,7 @@ describe('User API tests', () => {
         const fakeId = new Types.ObjectId()
 
         const { status } = await api
-          .patch(`/api/users/${fakeId}/reject`)
+          .patch(`/api/users/${fakeId}/friend/reject`)
           .set('Cookie', user1.cookies)
 
         expect(status).toBe(404)
@@ -355,15 +384,15 @@ describe('User API tests', () => {
     })
 
     describe('given the users do not have a pending request', () => {
-      it('should return 400 error code', async () => {
+      it('should return 409 error code', async () => {
         const user1 = users[6]
         const user2 = users[7]
 
         const { status } = await api
-          .patch(`/api/users/${user2._id}/reject`)
+          .patch(`/api/users/${user2._id}/friend/reject`)
           .set('Cookie', user1.cookies)
 
-        expect(status).toBe(400)
+        expect(status).toBe(409)
       })
     })
   })
@@ -375,15 +404,15 @@ describe('User API tests', () => {
         const user2 = users[1]
 
         await api
-          .patch(`/api/users/${user2._id}/request`)
+          .patch(`/api/users/${user2._id}/friend/request`)
           .set('Cookie', user1.cookies)
 
         await api
-          .patch(`/api/users/${user1._id}/accept`)
+          .patch(`/api/users/${user1._id}/friend/accept`)
           .set('Cookie', user2.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${user1._id}/remove`)
+          .patch(`/api/users/${user1._id}/friend/remove`)
           .set('Cookie', user2.cookies)
 
         expect(status).toBe(200)
@@ -396,7 +425,7 @@ describe('User API tests', () => {
         const fakeId = new Types.ObjectId()
 
         const { status } = await api
-          .patch(`/api/users/${fakeId}/remove`)
+          .patch(`/api/users/${fakeId}/friend/remove`)
           .set('Cookie', user1.cookies)
 
         expect(status).toBe(404)
@@ -404,15 +433,15 @@ describe('User API tests', () => {
     })
 
     describe('given the users are not friends', () => {
-      it('should return 400 error code', async () => {
+      it('should return 409 error code', async () => {
         const user1 = users[8]
         const user2 = users[9]
 
         const { status } = await api
-          .patch(`/api/users/${user2._id}/remove`)
+          .patch(`/api/users/${user2._id}/friend/remove`)
           .set('Cookie', user1.cookies)
 
-        expect(status).toBe(400)
+        expect(status).toBe(409)
       })
     })
   })

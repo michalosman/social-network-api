@@ -103,6 +103,11 @@ export default class UserController {
   }
 
   static async removeFriend(req: Request, res: Response) {
-    // TODO
+    const { id: userId } = res.locals.user
+    const { id: requestedId } = req.params
+
+    const removed = await UserService.removeFriend(userId, requestedId)
+
+    res.json(removed)
   }
 }

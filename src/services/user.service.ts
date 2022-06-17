@@ -140,10 +140,23 @@ export default class UserService {
     )
     await user.save()
 
-    return sanitizeUser(user)
+    return sanitizeUser(rejected)
   }
 
   static async removeFriend(userId: string, removedId: string) {
-    // TODO
+    const user = await UserModel.findById(userId)
+    const removed = await UserModel.findById(removedId)
+
+    if (!user || !removed) throw new NotFound('User not found')
+
+    if (!user.friends.includes(removed._id)) throw new Conflict('Not friends')
+
+    user.friends = user.friends.filter((id) => id !== removed._id)
+    await user.save()
+
+    removed.friends = removed.friends.filter((id) => id !== user._id)
+    await removed.save()
+
+    return sanitizeUser(removed)
   }
 }

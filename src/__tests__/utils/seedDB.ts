@@ -20,9 +20,3 @@ export const seedDb = async () => {
 
   return { users, posts, comments }
 }
-
-export type seedData = {
-  users: HydratedDocument<IUser>[]
-  posts: HydratedDocument<IPost>[]
-  comments: HydratedDocument<IComment>[]
-}

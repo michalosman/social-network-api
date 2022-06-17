@@ -7,32 +7,31 @@ import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
 import { userPayload } from './utils/payloads'
 import request from 'supertest'
 import app from '../app'
-import { seedData, seedDb } from './utils/seedDB'
+import { seedDb } from './utils/seedDB'
 import { Types } from 'mongoose'
 import UserModel from '../models/user.model'
+import _ from 'lodash'
 
 const api = request(app)
 
 describe('User API tests', () => {
-  let db: seedData
-  let user1: any
-  let user2: any
-  let cookies: string[]
+  let users: any[]
 
   beforeAll(async () => {
     await connectTestingDB()
-    db = await seedDb()
+    const db = await seedDb()
 
-    // Reformat users data to be compatible with the API responses
-    user1 = sanitizeUser(db.users[0])
-    user2 = sanitizeUser(db.users[1])
-    user1._id = user1._id.toString()
-    user2._id = user2._id.toString()
-
-    // Create cookies for each operation that needs auth
-    const accessToken = signAccessToken(user1._id)
-    const refreshToken = signRefreshToken(user1._id)
-    cookies = [`accessToken=${accessToken}`, `refreshToken=${refreshToken}`]
+    users = db.users.map((user: any) => {
+      // Reformat users data to be compatible with the API responses
+      user = sanitizeUser(user)
+      user._id = user._id.toString()
+      // Generate tokens for operations that need auth
+      user.cookies = [
+        `accessToken=${signAccessToken(user._id)}`,
+        `refreshToken=${signRefreshToken(user._id)}`,
+      ]
+      return user
+    })
   })
 
   afterAll(async () => {
@@ -148,10 +147,10 @@ describe('User API tests', () => {
 
   describe('POST /users/logout', () => {
     it('should remove the session', async () => {
-      const accessToken = signAccessToken(user1._id)
-      const refreshToken = signRefreshToken(user1._id)
+      const accessToken = signAccessToken(users[0]._id)
+      const refreshToken = signRefreshToken(users[0]._id)
 
-      const user = await UserModel.findById(user1._id)
+      const user = await UserModel.findById(users[0]._id)
       if (!user) return
       user.sessions = [...user.sessions, refreshToken]
       await user.save()
@@ -164,7 +163,7 @@ describe('User API tests', () => {
           `refreshToken=${refreshToken}`,
         ])
 
-      const updatedUser = await UserModel.findById(user1._id)
+      const updatedUser = await UserModel.findById(users[0]._id)
       if (!updatedUser) return
       expect(updatedUser.sessions).not.toContain(refreshToken)
     })
@@ -172,10 +171,10 @@ describe('User API tests', () => {
 
   describe('POST /users/logout/all', () => {
     it('should remove all sessions', async () => {
-      const accessToken = signAccessToken(user1._id)
-      const refreshToken = signRefreshToken(user1._id)
+      const accessToken = signAccessToken(users[0]._id)
+      const refreshToken = signRefreshToken(users[0]._id)
 
-      const user = await UserModel.findById(user1._id)
+      const user = await UserModel.findById(users[0]._id)
       if (!user) return
       user.sessions = [refreshToken, refreshToken, refreshToken]
       await user.save()
@@ -188,7 +187,7 @@ describe('User API tests', () => {
           `refreshToken=${refreshToken}`,
         ])
 
-      const updatedUser = await UserModel.findById(user1._id)
+      const updatedUser = await UserModel.findById(users[0]._id)
       if (!updatedUser) return
       expect(updatedUser.sessions.length).toBe(0)
     })
@@ -198,7 +197,7 @@ describe('User API tests', () => {
     it('should return a list of users', async () => {
       const { status, body } = await api
         .get('/api/users')
-        .set('Cookie', cookies)
+        .set('Cookie', users[0].cookies)
 
       expect(status).toBe(200)
       expect(body).toBeInstanceOf(Array)
@@ -209,11 +208,11 @@ describe('User API tests', () => {
     describe('given the user exists', () => {
       it('should return user data', async () => {
         const { status, body } = await api
-          .get(`/api/users/${user2._id}`)
-          .set('Cookie', cookies)
+          .get(`/api/users/${users[1]._id}`)
+          .set('Cookie', users[0].cookies)
 
         expect(status).toBe(200)
-        expect(body).toEqual(user2)
+        expect(body).toEqual(_.omit(users[1], 'cookies'))
       })
     })
 
@@ -223,76 +222,198 @@ describe('User API tests', () => {
 
         const { status } = await api
           .get(`/api/users/${fakeId}`)
-          .set('Cookie', cookies)
+          .set('Cookie', users[0].cookies)
 
         expect(status).toBe(404)
       })
     })
   })
 
-  describe.skip('PATCH /users/:id/friend/request', () => {
+  describe('PATCH /users/:id/friend/request', () => {
     describe('given the users are not friends', () => {
       it('should return 200 success code', async () => {
+        const user1 = users[0]
+        const user2 = users[1]
+
         const { status } = await api
           .patch(`/api/users/${user2._id}/request`)
-          .send(user1)
+          .set('Cookie', user1.cookies)
 
         expect(status).toBe(200)
       })
     })
+
+    describe('given the user does not exist', () => {
+      it('should return 404 error code', async () => {
+        const user1 = users[0]
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .patch(`/api/users/${fakeId}/request`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(404)
+      })
+    })
+
     describe('given the users are already friends', () => {
       it('should return 400 error code', async () => {
-        await api.patch(`/api/users/${user1._id}/accept`).send(user2)
+        const user1 = users[0]
+        const user2 = users[1]
+
+        await api
+          .patch(`/api/users/${user2._id}/request`)
+          .set('Cookie', user1.cookies)
+
+        await api
+          .patch(`/api/users/${user1._id}/accept`)
+          .set('Cookie', user2.cookies)
 
         const { status } = await api
           .patch(`/api/users/${user2._id}/request`)
-          .send(user1)
+          .set('Cookie', user1.cookies)
 
         expect(status).toBe(400)
       })
     })
   })
 
-  describe.skip('PATCH /users/:id/friend/accept', () => {
-    it('should return 200 success code', async () => {
-      const user1 = db.users[2]
-      const user2 = db.users[3]
+  describe('PATCH /users/:id/friend/accept', () => {
+    describe('given the users have a pending request', () => {
+      it('should return 200 success code', async () => {
+        const user1 = users[2]
+        const user2 = users[3]
 
-      await api.patch(`/api/users/${user2._id}/request`).send(user1)
+        await api
+          .patch(`/api/users/${user2._id}/request`)
+          .set('Cookie', user1.cookies)
 
-      const { status } = await api
-        .patch(`/api/users/${user1._id}/accept`)
-        .send(user2)
+        const { status } = await api
+          .patch(`/api/users/${user1._id}/accept`)
+          .set('Cookie', user2.cookies)
 
-      expect(status).toBe(200)
+        expect(status).toBe(200)
+      })
+    })
+
+    describe('given the user does not exist', () => {
+      it('should return 404 error code', async () => {
+        const user1 = users[0]
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .patch(`/api/users/${fakeId}/accept`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(404)
+      })
+    })
+
+    describe('given the users do not have a pending request', () => {
+      it('should return 404 error code', async () => {
+        const user1 = users[4]
+        const user2 = users[5]
+
+        const { status } = await api
+          .patch(`/api/users/${user2._id}/accept`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(404)
+      })
     })
   })
 
-  describe.skip('PATCH /users/:id/friend/reject', () => {
-    it('should return 200 success code', async () => {
-      const user1 = db.users[4]
-      const user2 = db.users[5]
+  describe('PATCH /users/:id/friend/reject', () => {
+    describe('given the users have a pending request', () => {
+      it('should return 200 success code', async () => {
+        const user1 = users[4]
+        const user2 = users[5]
 
-      await api.patch(`/api/users/${user2._id}/request`).send(user1)
+        await api
+          .patch(`/api/users/${user2._id}/request`)
+          .set('Cookie', user1.cookies)
 
-      const { status } = await api
-        .patch(`/api/users/${user1._id}/reject`)
-        .send(user2)
+        const { status } = await api
+          .patch(`/api/users/${user1._id}/reject`)
+          .set('Cookie', user2.cookies)
 
-      expect(status).toBe(200)
+        expect(status).toBe(200)
+      })
+    })
+
+    describe('given the user does not exist', () => {
+      it('should return 404 error code', async () => {
+        const user1 = users[4]
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .patch(`/api/users/${fakeId}/reject`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(404)
+      })
+    })
+
+    describe('given the users do not have a pending request', () => {
+      it('should return 400 error code', async () => {
+        const user1 = users[6]
+        const user2 = users[7]
+
+        const { status } = await api
+          .patch(`/api/users/${user2._id}/reject`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(400)
+      })
     })
   })
 
-  describe.skip('PATCH /users/:id/friend/remove', () => {
-    it('should return 200 success code', async () => {
-      const user1 = db.users[0]
-      const user2 = db.users[1]
+  describe('PATCH /users/:id/friend/remove', () => {
+    describe('given the users are friends', () => {
+      it('should return 200 success code', async () => {
+        const user1 = users[0]
+        const user2 = users[1]
 
-      const { status } = await api
-        .patch(`/api/users/${user1._id}/remove`)
-        .send(user2)
+        await api
+          .patch(`/api/users/${user2._id}/request`)
+          .set('Cookie', user1.cookies)
 
-      expect(status).toBe(200)
+        await api
+          .patch(`/api/users/${user1._id}/accept`)
+          .set('Cookie', user2.cookies)
+
+        const { status } = await api
+          .patch(`/api/users/${user1._id}/remove`)
+          .set('Cookie', user2.cookies)
+
+        expect(status).toBe(200)
+      })
+    })
+
+    describe('given the user does not exist', () => {
+      it('should return 404 error code', async () => {
+        const user1 = users[0]
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .patch(`/api/users/${fakeId}/remove`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(404)
+      })
+    })
+
+    describe('given the users are not friends', () => {
+      it('should return 400 error code', async () => {
+        const user1 = users[8]
+        const user2 = users[9]
+
+        const { status } = await api
+          .patch(`/api/users/${user2._id}/remove`)
+          .set('Cookie', user1.cookies)
+
+        expect(status).toBe(400)
+      })
     })
   })
 })

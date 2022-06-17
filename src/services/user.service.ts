@@ -127,7 +127,20 @@ export default class UserService {
   }
 
   static async rejectFriend(userId: string, rejectedId: string) {
-    // TODO
+    const user = await UserModel.findById(userId)
+    const rejected = await UserModel.findById(rejectedId)
+
+    if (!user || !rejected) throw new NotFound('User not found')
+
+    if (!user.friendRequests.includes(rejected._id))
+      throw new Conflict('No pending friend request')
+
+    user.friendRequests = user.friendRequests.filter(
+      (id) => id !== rejected._id
+    )
+    await user.save()
+
+    return sanitizeUser(user)
   }
 
   static async removeFriend(userId: string, removedId: string) {

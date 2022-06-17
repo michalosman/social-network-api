@@ -94,7 +94,12 @@ export default class UserController {
   }
 
   static async rejectFriend(req: Request, res: Response) {
-    // TODO
+    const { id: userId } = res.locals.user
+    const { id: requestedId } = req.params
+
+    const rejected = await UserService.rejectFriend(userId, requestedId)
+
+    res.json(rejected)
   }
 
   static async removeFriend(req: Request, res: Response) {

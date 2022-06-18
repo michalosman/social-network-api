@@ -66,7 +66,7 @@ describe('User API tests', () => {
       })
     })
 
-    describe.skip('given the user data is invalid', () => {
+    describe('given the user data is invalid', () => {
       it('should return 400 error code', async () => {
         const { status } = await api
           .post('/api/users/register')
@@ -76,7 +76,7 @@ describe('User API tests', () => {
       })
     })
 
-    describe.skip('given the user data is incomplete', () => {
+    describe('given the user data is incomplete', () => {
       it('should return 400 error code', async () => {
         const { status } = await api
           .post('/api/users/register')
@@ -124,7 +124,7 @@ describe('User API tests', () => {
       })
     })
 
-    describe.skip('given the user data is invalid', () => {
+    describe('given the user data is invalid', () => {
       it('should return a 400 error code', async () => {
         const { status } = await api
           .post('/api/users/login')
@@ -134,7 +134,7 @@ describe('User API tests', () => {
       })
     })
 
-    describe.skip('given the user data is incomplete', () => {
+    describe('given the user data is incomplete', () => {
       it('should return a 400 error code', async () => {
         const { status } = await api
           .post('/api/users/login')

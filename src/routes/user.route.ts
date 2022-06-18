@@ -1,12 +1,18 @@
+import { registerUserSchema, loginUserSchema } from './../schemas/user.schema'
 import { Router } from 'express'
 import UserController from '../controllers/user.controller'
 import auth from '../middlewares/auth'
 import validateID from '../middlewares/validateID'
+import validateSchema from '../middlewares/validateSchema'
 
 const userRouter = Router()
 
-userRouter.post('/register', UserController.register)
-userRouter.post('/login', UserController.login)
+userRouter.post(
+  '/register',
+  validateSchema(registerUserSchema),
+  UserController.register
+)
+userRouter.post('/login', validateSchema(loginUserSchema), UserController.login)
 userRouter.post('/logout', auth, UserController.logout)
 userRouter.post('/logout/all', auth, UserController.logoutAll)
 

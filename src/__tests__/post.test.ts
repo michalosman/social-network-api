@@ -9,11 +9,6 @@ import { signAccessToken, signRefreshToken } from '../utils/jwt'
 
 const api = request(app)
 
-// Create post
-// Delete post
-// Like post
-// Unlike post
-
 describe('Post API tests', () => {
   let user: any
   let posts: any

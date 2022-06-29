@@ -86,27 +86,27 @@ export default class UserController {
 
   static async acceptFriend(req: Request, res: Response) {
     const { id: userId } = res.locals.user
-    const { id: requestedId } = req.params
+    const { id: acceptedId } = req.params
 
-    const accepted = await UserService.acceptFriend(userId, requestedId)
+    const accepted = await UserService.acceptFriend(userId, acceptedId)
 
     res.json(accepted)
   }
 
   static async rejectFriend(req: Request, res: Response) {
     const { id: userId } = res.locals.user
-    const { id: requestedId } = req.params
+    const { id: rejectedId } = req.params
 
-    const rejected = await UserService.rejectFriend(userId, requestedId)
+    const rejected = await UserService.rejectFriend(userId, rejectedId)
 
     res.json(rejected)
   }
 
   static async removeFriend(req: Request, res: Response) {
     const { id: userId } = res.locals.user
-    const { id: requestedId } = req.params
+    const { id: removedId } = req.params
 
-    const removed = await UserService.removeFriend(userId, requestedId)
+    const removed = await UserService.removeFriend(userId, removedId)
 
     res.json(removed)
   }

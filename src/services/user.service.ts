@@ -116,7 +116,7 @@ export default class UserService {
 
     user.friends = [...user.friends, accepted._id]
     user.friendRequests = user.friendRequests.filter(
-      (id) => id !== accepted._id
+      (id) => id.toString() !== accepted._id.toString()
     )
     await user.save()
 
@@ -136,7 +136,7 @@ export default class UserService {
       throw new Conflict('No pending friend request')
 
     user.friendRequests = user.friendRequests.filter(
-      (id) => id !== rejected._id
+      (id) => id.toString() !== rejected._id.toString()
     )
     await user.save()
 
@@ -151,10 +151,14 @@ export default class UserService {
 
     if (!user.friends.includes(removed._id)) throw new Conflict('Not friends')
 
-    user.friends = user.friends.filter((id) => id !== removed._id)
+    user.friends = user.friends.filter(
+      (id) => id.toString() !== removed._id.toString()
+    )
     await user.save()
 
-    removed.friends = removed.friends.filter((id) => id !== user._id)
+    removed.friends = removed.friends.filter(
+      (id) => id.toString() !== user._id.toString()
+    )
     await removed.save()
 
     return sanitizeUser(removed)

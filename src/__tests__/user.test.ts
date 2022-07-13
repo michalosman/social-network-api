@@ -151,6 +151,7 @@ describe('User API tests', () => {
 
   describe('POST /users/logout', () => {
     it('should remove the session', async () => {
+      const user = users[++i]
       const accessToken = signAccessToken(user._id)
       const refreshToken = signRefreshToken(user._id)
 
@@ -175,6 +176,7 @@ describe('User API tests', () => {
 
   describe('POST /users/logout/all', () => {
     it('should remove all sessions', async () => {
+      const user = users[++i]
       const accessToken = signAccessToken(user._id)
       const refreshToken = signRefreshToken(user._id)
 
@@ -246,7 +248,7 @@ describe('User API tests', () => {
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(requestedUserUpdated.friendRequests.length).toBe(1)
+        expect(requestedUserUpdated.friendRequests).toContain(user._id)
       })
     })
 
@@ -330,9 +332,9 @@ describe('User API tests', () => {
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(userUpdated.friends.length).toBe(1)
-        expect(userUpdated.friendRequests.length).toBe(0)
-        expect(acceptedUserUpdated.friends.length).toBe(1)
+        expect(userUpdated.friends).toContain(acceptedUser._id)
+        expect(acceptedUserUpdated.friends).toContain(user._id)
+        expect(userUpdated.friendRequests).not.toContain(acceptedUser._id)
       })
     })
 
@@ -381,7 +383,7 @@ describe('User API tests', () => {
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(userUpdated.friendRequests.length).toBe(0)
+        expect(userUpdated.friendRequests).not.toContain(rejectedUser._id)
       })
     })
 
@@ -434,8 +436,8 @@ describe('User API tests', () => {
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(userUpdated.friends.length).toBe(0)
-        expect(removedUserUpdated.friends.length).toBe(0)
+        expect(userUpdated.friends).not.toContain(removedUser._id)
+        expect(removedUserUpdated.friends).not.toContain(user._id)
       })
     })
 

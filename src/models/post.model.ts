@@ -14,7 +14,10 @@ const postSchema = new Schema<IPost>(
       type: String,
       required: true,
     },
-    image: String,
+    image: {
+      type: String,
+      default: '',
+    },
     author: {
       type: Schema.Types.ObjectId,
       ref: 'User',

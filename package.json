@@ -8,8 +8,8 @@
     "start": "tsc & node .",
     "dev": "tsc -w & nodemon .",
     "dev:db": "sudo service mongodb start",
-    "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test": "jest --forceExit",
+    "test:watch": "jest --watchAll --forceExit"
   },
   "dependencies": {
     "@types/lodash": "^4.14.182",

@@ -1,5 +1,6 @@
 export const userPayload = {
   expectedOutput: {
+    __v: expect.any(Number),
     _id: expect.any(String),
     firstName: 'John',
     lastName: 'Doe',
@@ -8,7 +9,6 @@ export const userPayload = {
     friends: expect.any(Array),
     friendRequests: expect.any(Array),
     posts: expect.any(Array),
-    __v: expect.any(Number),
   },
 
   validRegistration: {
@@ -54,4 +54,28 @@ export const userPayload = {
     email: 'john.doe@gmail.com',
     password: 'wrong_password',
   },
+}
+
+export const postPayload = {
+  expectedOutput: {
+    __v: expect.any(Number),
+    _id: expect.any(String),
+    text: 'Post test',
+    image: expect.any(String),
+    author: expect.any(String),
+    likes: expect.any(Array),
+    comments: expect.any(Array),
+    createdAt: expect.any(String),
+    updatedAt: expect.any(String),
+  },
+
+  validCreation: {
+    text: 'Post test',
+  },
+
+  invalidCreation: {
+    text: 123,
+  },
+
+  incompleteCreation: {},
 }

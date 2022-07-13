@@ -62,9 +62,11 @@ export const postPayload = {
     _id: expect.any(String),
     text: 'Post test',
     image: expect.any(String),
-    author: expect.any(Object),
+    author: expect.any(String),
     likes: expect.any(Array),
     comments: expect.any(Array),
+    createdAt: expect.any(String),
+    updatedAt: expect.any(String),
   },
 
   validCreation: {

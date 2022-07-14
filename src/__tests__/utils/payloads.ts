@@ -78,3 +78,23 @@ export const postPayload = {
 
   incompleteCreation: {},
 }
+
+export const commentPayload = {
+  expectedOutput: {
+    id: expect.any(String),
+    text: 'Comment test',
+    author: expect.any(String),
+    createdAt: expect.any(String),
+    updatedAt: expect.any(String),
+  },
+
+  validCreation: {
+    text: 'Comment test',
+  },
+
+  invalidCreation: {
+    text: 123,
+  },
+
+  incompleteCreation: {},
+}

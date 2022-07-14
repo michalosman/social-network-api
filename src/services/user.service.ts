@@ -7,13 +7,12 @@ import { signAccessToken, signRefreshToken } from '../utils/jwt'
 import 'express-async-errors'
 
 export default class UserService {
-  static async register(user: IUser) {
-    const doesExist = await UserModel.findOne({ email: user.email })
+  static async register(userData: IUser) {
+    const doesExist = await UserModel.findOne({ email: userData.email })
     if (doesExist) throw new Conflict('User already exists')
 
-    const newUser = await UserModel.create(user)
-
-    return sanitizeUser(newUser)
+    const user = await UserModel.create(userData)
+    return sanitizeUser(user)
   }
 
   static async login(email: string, password: string) {

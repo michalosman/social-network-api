@@ -9,8 +9,8 @@ export default class PostService {
     const author = await UserModel.findById(authorId)
     if (!author) throw new NotFound('User not found')
 
-    const newPost = await PostModel.create({ text, author: author.id })
-    return newPost
+    const post = await PostModel.create({ text, author: author.id })
+    return post
   }
 
   static async like(postId: string, userId: string) {

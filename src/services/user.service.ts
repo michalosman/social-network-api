@@ -90,16 +90,16 @@ export default class UserService {
 
     if (!user || !requested) throw new NotFound('User not found')
 
-    if (user.friends.includes(requested._id))
+    if (user.friends.includes(requested.id))
       throw new Conflict('Already friends')
 
     if (
-      requested.friendRequests.includes(user._id) ||
-      user.friendRequests.includes(requested._id)
+      requested.friendRequests.includes(user.id) ||
+      user.friendRequests.includes(requested.id)
     )
       throw new Conflict('Already requested')
 
-    requested.friendRequests = [...requested.friendRequests, user._id]
+    requested.friendRequests = [...requested.friendRequests, user.id]
     await requested.save()
 
     return sanitizeUser(requested)
@@ -111,16 +111,16 @@ export default class UserService {
 
     if (!user || !accepted) throw new NotFound('User not found')
 
-    if (!user.friendRequests.includes(accepted._id))
+    if (!user.friendRequests.includes(accepted.id))
       throw new Conflict('No pending friend request')
 
-    user.friends = [...user.friends, accepted._id]
+    user.friends = [...user.friends, accepted.id]
     user.friendRequests = user.friendRequests.filter(
-      (id) => !id.equals(accepted._id)
+      (id) => id.toString() !== accepted.id
     )
     await user.save()
 
-    accepted.friends = [...accepted.friends, user._id]
+    accepted.friends = [...accepted.friends, user.id]
     await accepted.save()
 
     return sanitizeUser(accepted)
@@ -132,11 +132,11 @@ export default class UserService {
 
     if (!user || !rejected) throw new NotFound('User not found')
 
-    if (!user.friendRequests.includes(rejected._id))
+    if (!user.friendRequests.includes(rejected.id))
       throw new Conflict('No pending friend request')
 
     user.friendRequests = user.friendRequests.filter(
-      (id) => !id.equals(rejected._id)
+      (id) => id.toString() !== rejected.id
     )
     await user.save()
 
@@ -149,12 +149,12 @@ export default class UserService {
 
     if (!user || !removed) throw new NotFound('User not found')
 
-    if (!user.friends.includes(removed._id)) throw new Conflict('Not friends')
+    if (!user.friends.includes(removed.id)) throw new Conflict('Not friends')
 
-    user.friends = user.friends.filter((id) => !id.equals(removed._id))
+    user.friends = user.friends.filter((id) => id.toString() !== removed.id)
     await user.save()
 
-    removed.friends = removed.friends.filter((id) => !id.equals(user._id))
+    removed.friends = removed.friends.filter((id) => id.toString() !== user.id)
     await removed.save()
 
     return sanitizeUser(removed)

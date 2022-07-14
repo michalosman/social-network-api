@@ -1,14 +1,14 @@
 export const userPayload = {
   expectedOutput: {
-    __v: expect.any(Number),
-    _id: expect.any(String),
+    id: expect.any(String),
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@gmail.com',
-    image: expect.any(String),
-    friends: expect.any(Array),
-    friendRequests: expect.any(Array),
-    posts: expect.any(Array),
+    image: '',
+    friends: [],
+    friendRequests: [],
+    posts: [],
+    // Secured: password, sessions
   },
 
   validRegistration: {
@@ -58,13 +58,12 @@ export const userPayload = {
 
 export const postPayload = {
   expectedOutput: {
-    __v: expect.any(Number),
-    _id: expect.any(String),
+    id: expect.any(String),
     text: 'Post test',
-    image: expect.any(String),
+    image: '',
     author: expect.any(String),
-    likes: expect.any(Array),
-    comments: expect.any(Array),
+    likes: [],
+    comments: [],
     createdAt: expect.any(String),
     updatedAt: expect.any(String),
   },

@@ -9,7 +9,7 @@ export default class PostService {
     const author = await UserModel.findById(authorId)
     if (!author) throw new NotFound('User not found')
 
-    const newPost = await PostModel.create({ text, author: author._id })
+    const newPost = await PostModel.create({ text, author: author.id })
     return newPost
   }
 
@@ -20,10 +20,10 @@ export default class PostService {
     if (!post) throw new NotFound('Post not found')
     if (!user) throw new NotFound('User not found')
 
-    const alreadyLiked = post.likes.find((id) => id.equals(user._id))
+    const alreadyLiked = post.likes.find((id) => id.toString() === user.id)
     if (alreadyLiked) throw new Conflict('User already liked this post')
 
-    post.likes.push(user._id)
+    post.likes.push(user.id)
     await post.save()
     return post
   }
@@ -35,10 +35,10 @@ export default class PostService {
     if (!post) throw new NotFound('Post not found')
     if (!user) throw new NotFound('User not found')
 
-    const alreadyLiked = post.likes.find((id) => id.equals(user._id))
+    const alreadyLiked = post.likes.find((id) => id.toString() === user.id)
     if (!alreadyLiked) throw new Conflict('User has not liked this post')
 
-    post.likes = post.likes.filter((id) => !id.equals(user._id))
+    post.likes = post.likes.filter((id) => id.toString() !== user.id)
     await post.save()
     return post
   }

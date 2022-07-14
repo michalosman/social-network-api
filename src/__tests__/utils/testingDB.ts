@@ -6,6 +6,14 @@ let mongoTestServer: MongoMemoryServer
 export const connectTestingDB = async () => {
   mongoTestServer = await MongoMemoryServer.create()
   await mongoose.connect(mongoTestServer.getUri())
+
+  mongoose.set('toJSON', {
+    virtuals: true,
+    versionKey: false,
+    transform: (doc, converted) => {
+      delete converted._id
+    },
+  })
 }
 
 export const disconnectTestingDB = async () => {

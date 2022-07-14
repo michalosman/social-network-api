@@ -4,6 +4,7 @@ import errorHandler from './middlewares/errorHandler'
 import validateToken from './middlewares/validateToken'
 import userRouter from './routes/user.route'
 import postRouter from './routes/post.route'
+import commentRouter from './routes/comment.route'
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(validateToken)
 
 app.use('/api/users', userRouter)
 app.use('/api/posts', postRouter)
+app.use('/api/comments', commentRouter)
 
 app.use(errorHandler)
 

@@ -1,31 +1,60 @@
 import { faker } from '@faker-js/faker'
-import PostModel from '../../models/post.model'
+import PostModel, { IPost } from '../../models/post.model'
 import UserModel, { IUser } from '../../models/user.model'
-import CommentModel from '../../models/comment.model'
-import { HydratedDocument } from 'mongoose'
+import CommentModel, { IComment } from '../../models/comment.model'
+import { signAccessToken, signRefreshToken } from '../../utils/jwt'
 
-export const createFakeUser = async () => {
-  const user = new UserModel({
+export interface ITestUser extends IUser {
+  id: string
+  cookies: string[]
+}
+
+export interface ITestPost extends IPost {
+  id: string
+}
+
+export interface ITestComment extends IComment {
+  id: string
+}
+
+export const createTestUser = async (): Promise<ITestUser> => {
+  const user = await UserModel.create({
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
     email: faker.internet.email(),
     password: 'password',
   })
-  return await user.save()
+
+  return {
+    ...user.toJSON(),
+    id: user.id,
+    cookies: [
+      `accessToken=${signAccessToken(user.id)}`,
+      `refreshToken=${signRefreshToken(user.id)}`,
+    ],
+  }
 }
 
-export const createFakePost = async (user: HydratedDocument<IUser>) => {
-  const post = new PostModel({
+export const createTestPost = async (user: ITestUser): Promise<ITestPost> => {
+  const post = await PostModel.create({
     text: faker.lorem.paragraph(),
-    author: user._id,
+    author: user.id,
   })
-  return await post.save()
+  return {
+    ...post.toJSON(),
+    id: post.id,
+  }
 }
 
-export const createFakeComment = async (user: HydratedDocument<IUser>) => {
-  const comment = new CommentModel({
+export const createTestComment = async (
+  user: ITestUser
+): Promise<ITestComment> => {
+  const comment = await CommentModel.create({
     text: faker.lorem.paragraph(),
-    author: user._id,
+    author: user.id,
   })
-  return await comment.save()
+  return {
+    ...comment.toJSON(),
+    id: comment.id,
+  }
 }

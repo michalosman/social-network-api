@@ -11,10 +11,13 @@ export interface IUser {
   friendRequests: Types.ObjectId[]
   posts: Types.ObjectId[]
   sessions: string[]
+}
+
+interface IUserDocument extends IUser {
   comparePassword: (candidatePassword: string) => Promise<boolean>
 }
 
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUserDocument>({
   firstName: {
     type: String,
     required: true,
@@ -76,6 +79,6 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(candidatePassword, this.password)
 }
 
-const UserModel = model<IUser>('User', userSchema)
+const UserModel = model<IUserDocument>('User', userSchema)
 
 export default UserModel

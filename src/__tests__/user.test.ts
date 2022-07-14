@@ -1,48 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { sanitizeUser } from './../utils/sanitization'
-import { signRefreshToken } from './../utils/jwt'
-import { signAccessToken } from './../utils/jwt'
+import { signAccessToken, signRefreshToken } from './../utils/jwt'
 import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
 import { userPayload } from './utils/payloads'
 import request from 'supertest'
 import app from '../app'
-import { seedDb } from './utils/seedDB'
+import { seedDB } from './utils/seedDB'
 import { Types } from 'mongoose'
 import UserModel from '../models/user.model'
 import _ from 'lodash'
+import { ITestUser } from './utils/factories'
 
 const api = request(app)
 
 describe('User API tests', () => {
-  let users: any[]
-  let user: any
+  let users: ITestUser[]
+  let user: ITestUser
   let i = 0
 
   beforeAll(async () => {
     await connectTestingDB()
-    const db = await seedDb()
-
-    users = db.users.map((user: any) => {
-      // Reformat users data to be compatible with the API responses
-      user = sanitizeUser(user)
-      user._id = user._id.toString()
-      // Generate tokens for operations that need auth
-      user.cookies = [
-        `accessToken=${signAccessToken(user._id)}`,
-        `refreshToken=${signRefreshToken(user._id)}`,
-      ]
-      return user
-    })
-
+    const db = await seedDB()
+    users = db.users
     user = users[0]
   })
 
   afterAll(async () => {
     await disconnectTestingDB()
   })
-
-  // For registration & login we will use prepared payloads
 
   describe('POST /users/register', () => {
     describe('given the user data is valid', () => {
@@ -93,7 +78,6 @@ describe('User API tests', () => {
 
   describe('POST /users/login', () => {
     beforeAll(async () => {
-      // In case we run it separately from registration tests
       await api.post('/api/users/register').send(userPayload.validRegistration)
     })
 
@@ -152,10 +136,10 @@ describe('User API tests', () => {
   describe('POST /users/logout', () => {
     it('should remove the session', async () => {
       const user = users[++i]
-      const accessToken = signAccessToken(user._id)
-      const refreshToken = signRefreshToken(user._id)
+      const accessToken = signAccessToken(user.id)
+      const refreshToken = signRefreshToken(user.id)
 
-      const userDB = await UserModel.findById(user._id)
+      const userDB = await UserModel.findById(user.id)
       if (!userDB) return
       userDB.sessions = [...userDB.sessions, refreshToken]
       await userDB.save()
@@ -168,7 +152,7 @@ describe('User API tests', () => {
           `refreshToken=${refreshToken}`,
         ])
 
-      const updatedUser = await UserModel.findById(user._id)
+      const updatedUser = await UserModel.findById(user.id)
       if (!updatedUser) return
       expect(updatedUser.sessions).not.toContain(refreshToken)
     })
@@ -177,10 +161,10 @@ describe('User API tests', () => {
   describe('POST /users/logout/all', () => {
     it('should remove all sessions', async () => {
       const user = users[++i]
-      const accessToken = signAccessToken(user._id)
-      const refreshToken = signRefreshToken(user._id)
+      const accessToken = signAccessToken(user.id)
+      const refreshToken = signRefreshToken(user.id)
 
-      const userDB = await UserModel.findById(user._id)
+      const userDB = await UserModel.findById(user.id)
       if (!userDB) return
       userDB.sessions = [refreshToken, refreshToken, refreshToken]
       await userDB.save()
@@ -193,7 +177,7 @@ describe('User API tests', () => {
           `refreshToken=${refreshToken}`,
         ])
 
-      const updatedUser = await UserModel.findById(user._id)
+      const updatedUser = await UserModel.findById(user.id)
       if (!updatedUser) return
       expect(updatedUser.sessions.length).toBe(0)
     })
@@ -216,11 +200,11 @@ describe('User API tests', () => {
         const user = users[++i]
 
         const { status, body } = await api
-          .get(`/api/users/${user._id}`)
+          .get(`/api/users/${user.id}`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(body).toEqual(_.omit(user, 'cookies'))
+        expect(body).toEqual(_.omit(user, 'password', 'sessions', 'cookies'))
       })
     })
 
@@ -244,11 +228,11 @@ describe('User API tests', () => {
         const requestedUser = users[++i]
 
         const { status, body: requestedUserUpdated } = await api
-          .patch(`/api/users/${requestedUser._id}/friend/request`)
+          .patch(`/api/users/${requestedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(requestedUserUpdated.friendRequests).toContain(user._id)
+        expect(requestedUserUpdated.friendRequests).toContain(user.id)
       })
     })
 
@@ -267,7 +251,7 @@ describe('User API tests', () => {
     describe('given the user wants to request self friendship', () => {
       it('should return 400 error code', async () => {
         const { status } = await api
-          .patch(`/api/users/${user._id}/friend/request`)
+          .patch(`/api/users/${user.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(400)
@@ -280,15 +264,15 @@ describe('User API tests', () => {
         const requestedUser = users[++i]
 
         await api
-          .patch(`/api/users/${requestedUser._id}/friend/request`)
+          .patch(`/api/users/${requestedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         await api
-          .patch(`/api/users/${user._id}/friend/accept`)
+          .patch(`/api/users/${user.id}/friend/accept`)
           .set('Cookie', requestedUser.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${requestedUser._id}/friend/request`)
+          .patch(`/api/users/${requestedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)
@@ -301,11 +285,11 @@ describe('User API tests', () => {
         const requestedUser = users[++i]
 
         await api
-          .patch(`/api/users/${requestedUser._id}/friend/request`)
+          .patch(`/api/users/${requestedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${requestedUser._id}/friend/request`)
+          .patch(`/api/users/${requestedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)
@@ -320,21 +304,21 @@ describe('User API tests', () => {
         const acceptedUser = users[++i]
 
         await api
-          .patch(`/api/users/${user._id}/friend/request`)
+          .patch(`/api/users/${user.id}/friend/request`)
           .set('Cookie', acceptedUser.cookies)
 
         const { status, body: acceptedUserUpdated } = await api
-          .patch(`/api/users/${acceptedUser._id}/friend/accept`)
+          .patch(`/api/users/${acceptedUser.id}/friend/accept`)
           .set('Cookie', user.cookies)
 
         const { body: userUpdated } = await api
-          .get(`/api/users/${user._id}`)
+          .get(`/api/users/${user.id}`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(userUpdated.friends).toContain(acceptedUser._id)
-        expect(acceptedUserUpdated.friends).toContain(user._id)
-        expect(userUpdated.friendRequests).not.toContain(acceptedUser._id)
+        expect(userUpdated.friends).toContain(acceptedUser.id)
+        expect(acceptedUserUpdated.friends).toContain(user.id)
+        expect(userUpdated.friendRequests).not.toContain(acceptedUser.id)
       })
     })
 
@@ -356,7 +340,7 @@ describe('User API tests', () => {
         const acceptedUser = users[++i]
 
         const { status } = await api
-          .patch(`/api/users/${acceptedUser._id}/friend/accept`)
+          .patch(`/api/users/${acceptedUser.id}/friend/accept`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)
@@ -371,19 +355,19 @@ describe('User API tests', () => {
         const rejectedUser = users[++i]
 
         await api
-          .patch(`/api/users/${user._id}/friend/request`)
+          .patch(`/api/users/${user.id}/friend/request`)
           .set('Cookie', rejectedUser.cookies)
 
         const { status } = await api
-          .patch(`/api/users/${rejectedUser._id}/friend/reject`)
+          .patch(`/api/users/${rejectedUser.id}/friend/reject`)
           .set('Cookie', user.cookies)
 
         const { body: userUpdated } = await api
-          .get(`/api/users/${user._id}`)
+          .get(`/api/users/${user.id}`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(userUpdated.friendRequests).not.toContain(rejectedUser._id)
+        expect(userUpdated.friendRequests).not.toContain(rejectedUser.id)
       })
     })
 
@@ -405,7 +389,7 @@ describe('User API tests', () => {
         const rejectedUser = users[++i]
 
         const { status } = await api
-          .patch(`/api/users/${rejectedUser._id}/friend/reject`)
+          .patch(`/api/users/${rejectedUser.id}/friend/reject`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)
@@ -420,24 +404,24 @@ describe('User API tests', () => {
         const removedUser = users[++i]
 
         await api
-          .patch(`/api/users/${removedUser._id}/friend/request`)
+          .patch(`/api/users/${removedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         await api
-          .patch(`/api/users/${user._id}/friend/accept`)
+          .patch(`/api/users/${user.id}/friend/accept`)
           .set('Cookie', removedUser.cookies)
 
         const { status, body: removedUserUpdated } = await api
-          .patch(`/api/users/${removedUser._id}/friend/remove`)
+          .patch(`/api/users/${removedUser.id}/friend/remove`)
           .set('Cookie', user.cookies)
 
         const { body: userUpdated } = await api
-          .get(`/api/users/${user._id}`)
+          .get(`/api/users/${user.id}`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(userUpdated.friends).not.toContain(removedUser._id)
-        expect(removedUserUpdated.friends).not.toContain(user._id)
+        expect(userUpdated.friends).not.toContain(removedUser.id)
+        expect(removedUserUpdated.friends).not.toContain(user.id)
       })
     })
 
@@ -455,11 +439,11 @@ describe('User API tests', () => {
 
     describe('given the users are not friends', () => {
       it('should return 409 error code', async () => {
-        const user = users[i++]
-        const removedUser = users[i++]
+        const user = users[++i]
+        const removedUser = users[++i]
 
         const { status } = await api
-          .patch(`/api/users/${removedUser._id}/friend/remove`)
+          .patch(`/api/users/${removedUser.id}/friend/remove`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)

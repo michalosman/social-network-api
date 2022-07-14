@@ -1,22 +1,29 @@
-import { HydratedDocument } from 'mongoose'
-import { IComment } from '../../models/comment.model'
-import { IPost } from '../../models/post.model'
-import { IUser } from '../../models/user.model'
-import { createFakeComment, createFakePost, createFakeUser } from './factories'
+import {
+  createTestComment,
+  createTestPost,
+  createTestUser,
+  ITestComment,
+  ITestPost,
+  ITestUser,
+} from './factories'
 
-export const seedDb = async () => {
-  const users: HydratedDocument<IUser>[] = []
-  const posts: HydratedDocument<IPost>[] = []
-  const comments: HydratedDocument<IComment>[] = []
+export const seedDB = async () => {
+  const users: ITestUser[] = []
+  const posts: ITestPost[] = []
+  const comments: ITestComment[] = []
 
   for (let i = 0; i < 30; i++) {
-    const user = await createFakeUser()
-    const post = await createFakePost(user)
-    const comment = await createFakeComment(user)
+    const user = await createTestUser()
+    const post = await createTestPost(user)
+    const comment = await createTestComment(user)
     users.push(user)
     posts.push(post)
     comments.push(comment)
   }
 
-  return { users, posts, comments }
+  return {
+    users,
+    posts,
+    comments,
+  }
 }

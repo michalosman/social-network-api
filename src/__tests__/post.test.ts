@@ -1,32 +1,25 @@
+import { ITestPost } from './utils/factories'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Types } from 'mongoose'
-import { seedDb } from './utils/seedDB'
+import { seedDB } from './utils/seedDB'
 import request from 'supertest'
 import app from '../app'
 import { postPayload } from './utils/payloads'
 import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
-import { signAccessToken, signRefreshToken } from '../utils/jwt'
+import { ITestUser } from './utils/factories'
 
 const api = request(app)
 
 describe('Post API tests', () => {
-  let user: any
-  let posts: any
+  let user: ITestUser
+  let posts: ITestPost[]
   let i = 0
 
   beforeAll(async () => {
     await connectTestingDB()
-    const db = await seedDb()
-
+    const db = await seedDB()
     user = db.users[0]
-    user.cookies = [
-      `accessToken=${signAccessToken(user._id)}`,
-      `refreshToken=${signRefreshToken(user._id)}`,
-    ]
-
-    posts = db.posts.map((post: any) => {
-      return { ...post, _id: post._id.toString() }
-    })
+    posts = db.posts
   })
 
   afterAll(async () => {
@@ -75,7 +68,7 @@ describe('Post API tests', () => {
         const post = posts[++i]
 
         const { status, body } = await api
-          .patch(`/api/posts/${post._id}/like`)
+          .patch(`/api/posts/${post.id}/like`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
@@ -100,11 +93,11 @@ describe('Post API tests', () => {
         const post = posts[++i]
 
         await api
-          .patch(`/api/posts/${post._id}/like`)
+          .patch(`/api/posts/${post.id}/like`)
           .set('Cookie', user.cookies)
 
         const { status } = await api
-          .patch(`/api/posts/${post._id}/like`)
+          .patch(`/api/posts/${post.id}/like`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)
@@ -118,11 +111,11 @@ describe('Post API tests', () => {
         const post = posts[++i]
 
         await api
-          .patch(`/api/posts/${post._id}/like`)
+          .patch(`/api/posts/${post.id}/like`)
           .set('Cookie', user.cookies)
 
         const { status, body } = await api
-          .patch(`/api/posts/${post._id}/unlike`)
+          .patch(`/api/posts/${post.id}/unlike`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
@@ -147,7 +140,7 @@ describe('Post API tests', () => {
         const post = posts[++i]
 
         const { status } = await api
-          .patch(`/api/posts/${post._id}/unlike`)
+          .patch(`/api/posts/${post.id}/unlike`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(409)

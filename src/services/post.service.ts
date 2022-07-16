@@ -10,6 +10,10 @@ export default class PostService {
     if (!author) throw new NotFound('User not found')
 
     const post = await PostModel.create({ text, author: author.id })
+
+    author.posts = [...author.posts, post.id]
+    await author.save()
+
     return post
   }
 

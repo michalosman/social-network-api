@@ -7,6 +7,7 @@ import app from '../app'
 import { postPayload } from './utils/payloads'
 import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
 import { ITestUser } from './utils/factories'
+import UserModel from '../models/user.model'
 
 const api = request(app)
 
@@ -33,6 +34,9 @@ describe('Post API tests', () => {
           .post('/api/posts')
           .set('Cookie', user.cookies)
           .send(postPayload.validCreation)
+
+        const updatedUser = await UserModel.findById(user.id)
+        expect(updatedUser?.posts.length).toBe(1)
 
         expect(status).toBe(200)
         expect(body).toEqual(postPayload.expectedOutput)

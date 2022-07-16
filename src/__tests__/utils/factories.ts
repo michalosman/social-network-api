@@ -47,11 +47,13 @@ export const createTestPost = async (user: ITestUser): Promise<ITestPost> => {
 }
 
 export const createTestComment = async (
-  user: ITestUser
+  user: ITestUser,
+  post: ITestPost
 ): Promise<ITestComment> => {
   const comment = await CommentModel.create({
     text: faker.lorem.paragraph(),
     author: user.id,
+    post: post.id,
   })
   return {
     ...comment.toJSON(),

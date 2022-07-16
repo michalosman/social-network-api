@@ -3,6 +3,7 @@ import { Types, Schema, model } from 'mongoose'
 export interface IComment {
   text: string
   author: Types.ObjectId
+  post: Types.ObjectId
 }
 
 const commentSchema = new Schema<IComment>(
@@ -14,6 +15,11 @@ const commentSchema = new Schema<IComment>(
     author: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
+    },
+    post: {
+      type: Schema.Types.ObjectId,
+      ref: 'Post',
       required: true,
     },
   },

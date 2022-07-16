@@ -15,7 +15,7 @@ export const seedDB = async () => {
   for (let i = 0; i < 30; i++) {
     const user = await createTestUser()
     const post = await createTestPost(user)
-    const comment = await createTestComment(user)
+    const comment = await createTestComment(user, post)
     users.push(user)
     posts.push(post)
     comments.push(comment)

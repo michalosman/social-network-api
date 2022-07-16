@@ -4,7 +4,7 @@ import {
   verifyAccessToken,
   verifyRefreshToken,
   signAccessToken,
-} from './../utils/jwt'
+} from '../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
 import UserModel from '../models/user.model'
 import { NotFound } from '../utils/errors'

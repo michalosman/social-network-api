@@ -84,6 +84,7 @@ export const commentPayload = {
     id: expect.any(String),
     text: 'Comment test',
     author: expect.any(String),
+    post: expect.any(String),
     createdAt: expect.any(String),
     updatedAt: expect.any(String),
   },

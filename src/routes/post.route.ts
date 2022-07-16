@@ -1,16 +1,16 @@
 import { Router } from 'express'
 import PostController from '../controllers/post.controller'
 import auth from '../middlewares/auth'
-import validateID from '../middlewares/validateID'
-import validateSchema from '../middlewares/validateSchema'
+import validateParams from '../middlewares/validateParams'
+import validateBody from '../middlewares/validateBody'
 import { createPost } from '../schemas/post.schema'
 
 const postRouter = Router()
 
 postRouter.use(auth)
 
-postRouter.post('/', validateSchema(createPost), PostController.create)
-postRouter.patch('/:id/like', validateID, PostController.like)
-postRouter.patch('/:id/unlike', validateID, PostController.unlike)
+postRouter.post('/', validateBody(createPost), PostController.create)
+postRouter.patch('/:id/like', validateParams, PostController.like)
+postRouter.patch('/:id/unlike', validateParams, PostController.unlike)
 
 export default postRouter

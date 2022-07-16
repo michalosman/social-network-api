@@ -1,8 +1,8 @@
-import { BadRequest } from './../utils/errors'
+import { BadRequest } from '../utils/errors'
 import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject } from 'zod'
 
-const validateSchema =
+const validateBody =
   (schema: AnyZodObject) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -13,4 +13,4 @@ const validateSchema =
     return next()
   }
 
-export default validateSchema
+export default validateBody

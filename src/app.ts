@@ -1,14 +1,16 @@
-import express from 'express'
 import cookieParser from 'cookie-parser'
+import express from 'express'
+
 import errorHandler from './middlewares/errorHandler'
 import validateToken from './middlewares/validateToken'
-import userRouter from './routes/user.route'
-import postRouter from './routes/post.route'
 import commentRouter from './routes/comment.route'
+import postRouter from './routes/post.route'
+import userRouter from './routes/user.route'
 
 const app = express()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(validateToken)
 

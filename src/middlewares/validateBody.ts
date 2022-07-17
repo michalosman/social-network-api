@@ -1,6 +1,7 @@
-import { BadRequest } from '../utils/errors'
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction,Request, Response } from 'express'
 import { AnyZodObject } from 'zod'
+
+import { BadRequest } from '../utils/errors'
 
 const validateBody =
   (schema: AnyZodObject) =>

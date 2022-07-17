@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker'
+
+import CommentModel, { IComment } from '../../models/comment.model'
 import PostModel, { IPost } from '../../models/post.model'
 import UserModel, { IUser } from '../../models/user.model'
-import CommentModel, { IComment } from '../../models/comment.model'
 import { signAccessToken, signRefreshToken } from '../../utils/jwt'
 
 export interface ITestUser extends IUser {

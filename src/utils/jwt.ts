@@ -1,5 +1,6 @@
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
 import jwt from 'jsonwebtoken'
+
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
 
 export const signAccessToken = (id: string) => {
   return jwt.sign({ id }, ACCESS_TOKEN.PRIVATE_KEY, {

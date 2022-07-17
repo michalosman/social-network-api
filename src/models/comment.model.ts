@@ -1,4 +1,4 @@
-import { Types, Schema, model } from 'mongoose'
+import { model,Schema, Types } from 'mongoose'
 
 export interface IComment {
   text: string

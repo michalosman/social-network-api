@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+
 import CommentService from '../services/comment.service'
 
 export default class CommentController {
@@ -8,6 +9,7 @@ export default class CommentController {
     const { postId } = req.params
 
     const comment = await CommentService.create(text, authorId, postId)
+
     res.json(comment)
   }
 }

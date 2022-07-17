@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import {
-  verifyAccessToken,
-  verifyRefreshToken,
-  signAccessToken,
-} from '../utils/jwt'
-import { Request, Response, NextFunction } from 'express'
+import 'express-async-errors'
+
+import { NextFunction,Request, Response } from 'express'
+
+import { ACCESS_TOKEN } from '../configs/constants'
 import UserModel from '../models/user.model'
 import { NotFound } from '../utils/errors'
-import { ACCESS_TOKEN } from '../configs/constants'
-import 'express-async-errors'
+import {
+  signAccessToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+} from '../utils/jwt'
 
 const validateToken = async (
   req: Request,

@@ -9,7 +9,8 @@
     "dev": "tsc -w & nodemon .",
     "dev:db": "sudo service mongodb start",
     "test": "jest --forceExit",
-    "test:watch": "jest --watchAll --forceExit"
+    "test:watch": "jest --watchAll --forceExit",
+    "eslint:fix": "eslint --fix"
   },
   "dependencies": {
     "@types/lodash": "^4.14.182",
@@ -40,6 +41,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "jest": "^27.5.1",
     "mongodb-memory-server": "^8.5.2",
     "nodemon": "^2.0.16",

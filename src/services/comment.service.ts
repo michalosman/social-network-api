@@ -1,7 +1,7 @@
-import { NotFound } from './../utils/errors'
-import UserModel from '../models/user.model'
 import CommentModel from '../models/comment.model'
 import PostModel from '../models/post.model'
+import UserModel from '../models/user.model'
+import { NotFound } from './../utils/errors'
 
 export default class CommentService {
   static async create(text: string, authorId: string, postId: string) {

@@ -1,9 +1,10 @@
-import { registerUserSchema, loginUserSchema } from './../schemas/user.schema'
 import { Router } from 'express'
+
 import UserController from '../controllers/user.controller'
 import auth from '../middlewares/auth'
-import validateParams from '../middlewares/validateParams'
 import validateBody from '../middlewares/validateBody'
+import validateParams from '../middlewares/validateParams'
+import { loginUserSchema,registerUserSchema } from './../schemas/user.schema'
 
 const userRouter = Router()
 
@@ -16,8 +17,8 @@ userRouter.post('/login', validateBody(loginUserSchema), UserController.login)
 userRouter.post('/logout', auth, UserController.logout)
 userRouter.post('/logout/all', auth, UserController.logoutAll)
 
-userRouter.get('/', auth, UserController.getAll)
-userRouter.get('/:id', auth, validateParams, UserController.get)
+userRouter.get('/search', auth, UserController.getSearched)
+userRouter.get('/profile/:id', auth, validateParams, UserController.getProfile)
 
 userRouter.patch(
   '/:id/friend/request',

@@ -1,8 +1,9 @@
-import { Conflict } from './../utils/errors'
+import 'express-async-errors'
+
 import PostModel from '../models/post.model'
 import UserModel from '../models/user.model'
 import { NotFound } from '../utils/errors'
-import 'express-async-errors'
+import { BadRequest, Conflict } from './../utils/errors'
 
 export default class PostService {
   static async create(text: string, authorId: string) {
@@ -15,6 +16,63 @@ export default class PostService {
     await author.save()
 
     return post
+  }
+
+  static async getFeed(userId: string, offset: number, limit: number) {
+    if (offset < 0 || limit < 0 || isNaN(offset) || isNaN(limit))
+      throw new BadRequest('Must provide offset and limit in query string')
+
+    const user = await UserModel.findById(userId)
+    if (!user) throw new NotFound('User not found')
+
+    const posts = await PostModel.find()
+      .populate({
+        path: 'author',
+        select: ['firstName', 'lastName', 'image'],
+      })
+      .where('author')
+      .in([...user.friends, user.id])
+      .sort({
+        createdAt: 'desc',
+      })
+      .skip(offset)
+      .limit(limit)
+
+    return posts
+  }
+
+  static async getTimeline(userId: string, offset: number, limit: number) {
+    if (offset < 0 || limit < 0 || isNaN(offset) || isNaN(limit))
+      throw new BadRequest('Must provide offset and limit in query string')
+
+    const user = await UserModel.findById(userId)
+    if (!user) throw new NotFound('User not found')
+
+    const posts = await PostModel.find({ author: user.id })
+      .populate({
+        path: 'author',
+        select: ['firstName', 'lastName', 'image'],
+      })
+      .sort({
+        createdAt: 'desc',
+      })
+      .skip(offset)
+      .limit(limit)
+
+    return posts
+  }
+
+  static async getComments(postId: string) {
+    const post = await PostModel.findById(postId).populate({
+      path: 'comments',
+      populate: {
+        path: 'author',
+        select: ['firstName', 'lastName', 'image'],
+      },
+    })
+    if (!post) throw new NotFound('Post not found')
+
+    return post.comments
   }
 
   static async like(postId: string, userId: string) {

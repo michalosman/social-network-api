@@ -1,15 +1,21 @@
 import { Router } from 'express'
+
 import PostController from '../controllers/post.controller'
 import auth from '../middlewares/auth'
-import validateParams from '../middlewares/validateParams'
 import validateBody from '../middlewares/validateBody'
-import { createPost } from '../schemas/post.schema'
+import validateParams from '../middlewares/validateParams'
+import { createPostSchema } from '../schemas/post.schema'
 
 const postRouter = Router()
 
 postRouter.use(auth)
 
-postRouter.post('/', validateBody(createPost), PostController.create)
+postRouter.post('/', validateBody(createPostSchema), PostController.create)
+
+postRouter.get('/feed', PostController.getFeed)
+postRouter.get('/timeline/:userId', validateParams, PostController.getTimeline)
+postRouter.get('/:id/comments', validateParams, PostController.getComments)
+
 postRouter.patch('/:id/like', validateParams, PostController.like)
 postRouter.patch('/:id/unlike', validateParams, PostController.unlike)
 

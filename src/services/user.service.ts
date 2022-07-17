@@ -1,10 +1,10 @@
-import { sanitizeUsers } from './../utils/sanitization'
-import { sanitizeUser } from '../utils/sanitization'
-import { BadRequest, Unauthorized } from './../utils/errors'
-import { Conflict, NotFound } from '../utils/errors'
-import UserModel, { IUser } from './../models/user.model'
-import { signAccessToken, signRefreshToken } from '../utils/jwt'
 import 'express-async-errors'
+
+import { Conflict, NotFound } from '../utils/errors'
+import { signAccessToken, signRefreshToken } from '../utils/jwt'
+import { sanitizeUser } from '../utils/sanitization'
+import UserModel, { IUser } from './../models/user.model'
+import { BadRequest, Unauthorized } from './../utils/errors'
 
 export default class UserService {
   static async register(userData: IUser) {
@@ -12,11 +12,20 @@ export default class UserService {
     if (doesExist) throw new Conflict('User already exists')
 
     const user = await UserModel.create(userData)
+
     return sanitizeUser(user)
   }
 
   static async login(email: string, password: string) {
     const user = await UserModel.findOne({ email })
+      .populate({
+        path: 'friends',
+        select: ['firstName', 'lastName', 'image'],
+      })
+      .populate({
+        path: 'friendRequests',
+        select: ['firstName', 'lastName', 'image'],
+      })
     if (!user) throw new NotFound('User does not exist')
 
     const isPasswordValid = await user.comparePassword(password)
@@ -67,13 +76,29 @@ export default class UserService {
     return sanitizeUser(user)
   }
 
-  static async getAll() {
-    const users = await UserModel.find()
-    return sanitizeUsers(users)
+  static async getSearched(firstName: string, lastName: string, limit: number) {
+    if (limit < 0 || isNaN(limit))
+      throw new BadRequest('Must provide limit in query string')
+
+    const users = await UserModel.find({
+      firstName: { $regex: new RegExp(firstName, 'i') },
+      lastName: { $regex: new RegExp(lastName, 'i') },
+    })
+      .select(['firstName', 'lastName', 'image'])
+      .limit(limit)
+      .sort({
+        firstName: 'asc',
+        lastName: 'asc',
+      })
+
+    return users
   }
 
-  static async get(userId: string) {
-    const user = await UserModel.findById(userId)
+  static async getProfile(userId: string) {
+    const user = await UserModel.findById(userId).populate({
+      path: 'friends',
+      select: ['firstName', 'lastName', 'image'],
+    })
 
     if (!user) throw new NotFound('User not found')
 
@@ -147,7 +172,6 @@ export default class UserService {
     const removed = await UserModel.findById(removedId)
 
     if (!user || !removed) throw new NotFound('User not found')
-
     if (!user.friends.includes(removed.id)) throw new Conflict('Not friends')
 
     user.friends = user.friends.filter((id) => id.toString() !== removed.id)

@@ -1,10 +1,14 @@
 import { Request, Response } from 'express'
-import UserService from '../services/user.service'
+
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
+import UserService from '../services/user.service'
 
 export default class UserController {
   static async register(req: Request, res: Response) {
-    const user = await UserService.register(req.body)
+    const userData = req.body
+
+    const user = await UserService.register(userData)
+
     res.json(user)
   }
 
@@ -20,7 +24,6 @@ export default class UserController {
       maxAge: ACCESS_TOKEN.COOKIE_TTL,
       httpOnly: true,
     })
-
     res.cookie('refreshToken', refreshToken, {
       maxAge: REFRESH_TOKEN.COOKIE_TTL,
       httpOnly: true,
@@ -39,7 +42,6 @@ export default class UserController {
       maxAge: 0,
       httpOnly: true,
     })
-
     res.cookie('refreshToken', '', {
       maxAge: 0,
       httpOnly: true,
@@ -56,7 +58,6 @@ export default class UserController {
     res.cookie('accessToken', '', {
       maxAge: 0,
     })
-
     res.cookie('refreshToken', '', {
       maxAge: 0,
     })
@@ -64,14 +65,23 @@ export default class UserController {
     res.json(user)
   }
 
-  static async getAll(req: Request, res: Response) {
-    const users = await UserService.getAll()
+  static async getSearched(req: Request, res: Response) {
+    const { firstName, lastName, limit } = req.query
+
+    const users = await UserService.getSearched(
+      firstName as string,
+      lastName as string,
+      parseInt(limit as string)
+    )
+
     res.json(users)
   }
 
-  static async get(req: Request, res: Response) {
+  static async getProfile(req: Request, res: Response) {
     const { id } = req.params
-    const user = await UserService.get(id)
+
+    const user = await UserService.getProfile(id)
+
     res.json(user)
   }
 

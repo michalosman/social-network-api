@@ -1,19 +1,20 @@
-import { ITestPost } from './utils/factories'
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Types } from 'mongoose'
-import { seedDB } from './utils/seedDB'
 import request from 'supertest'
+
 import app from '../app'
-import { postPayload } from './utils/payloads'
-import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
-import { ITestUser } from './utils/factories'
 import UserModel from '../models/user.model'
+import { ITestPost } from './utils/factories'
+import { ITestUser } from './utils/factories'
+import { postPayload } from './utils/payloads'
+import { seedDB } from './utils/seedDB'
+import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
 
 const api = request(app)
 
 describe('Post API tests', () => {
   let user: ITestUser
   let posts: ITestPost[]
+  let post: ITestPost
   let i = 0
 
   beforeAll(async () => {
@@ -21,6 +22,7 @@ describe('Post API tests', () => {
     const db = await seedDB()
     user = db.users[0]
     posts = db.posts
+    post = posts[0]
   })
 
   afterAll(async () => {
@@ -62,6 +64,85 @@ describe('Post API tests', () => {
           .send(postPayload.incompleteCreation)
 
         expect(status).toBe(400)
+      })
+    })
+  })
+
+  describe('GET /posts/feed', () => {
+    describe('given the query string is correct and user exists', () => {
+      it(`should return a list of posts from user's feed`, async () => {
+        const { status, body } = await api
+          .get('/api/posts/feed')
+          .set('Cookie', user.cookies)
+          .query({
+            offset: 0,
+            limit: 10,
+          })
+
+        expect(status).toBe(200)
+        expect(body).toBeInstanceOf(Array)
+      })
+    })
+
+    describe('given the query string is incorrect', () => {
+      it('should return 400 error code', async () => {
+        const { status } = await api
+          .get('/api/posts/feed')
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(400)
+      })
+    })
+  })
+
+  describe('GET /posts/timeline/:userId', () => {
+    describe('given the query string is correct and user exists', () => {
+      it(`should return a list of posts from user's timeline`, async () => {
+        const { status, body } = await api
+          .get(`/api/posts/timeline/${user.id}`)
+          .set('Cookie', user.cookies)
+          .query({
+            offset: 0,
+            limit: 10,
+          })
+
+        expect(status).toBe(200)
+        expect(body).toBeInstanceOf(Array)
+      })
+    })
+
+    describe('given the query string is incorrect', () => {
+      it(`should return 400 error code`, async () => {
+        const { status } = await api
+          .get(`/api/posts/timeline/${user.id}`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(400)
+      })
+    })
+  })
+
+  describe('GET /posts/:id/comments', () => {
+    describe('given the post exists', () => {
+      it(`should return a list of post's comments`, async () => {
+        const { status, body } = await api
+          .get(`/api/posts/${post.id}/comments`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(200)
+        expect(body).toBeInstanceOf(Array)
+      })
+    })
+
+    describe('given the post does not exist', () => {
+      it(`should return 404 error code`, async () => {
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .get(`/api/posts/${fakeId}/comments`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(404)
       })
     })
   })

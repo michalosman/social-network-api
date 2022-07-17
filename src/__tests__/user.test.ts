@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { signAccessToken, signRefreshToken } from './../utils/jwt'
-import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
-import { userPayload } from './utils/payloads'
-import request from 'supertest'
-import app from '../app'
-import { seedDB } from './utils/seedDB'
-import { Types } from 'mongoose'
-import UserModel from '../models/user.model'
 import _ from 'lodash'
+import { Types } from 'mongoose'
+import request from 'supertest'
+
+import app from '../app'
+import UserModel from '../models/user.model'
+import { signAccessToken, signRefreshToken } from './../utils/jwt'
 import { ITestUser } from './utils/factories'
+import { userPayload } from './utils/payloads'
+import { seedDB } from './utils/seedDB'
+import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
 
 const api = request(app)
 
@@ -93,7 +92,7 @@ describe('User API tests', () => {
     })
 
     describe('given the user does not exist', () => {
-      it('should return a 404 error code', async () => {
+      it('should return 404 error code', async () => {
         const { status } = await api
           .post('/api/users/login')
           .send(userPayload.nonExistentLogin)
@@ -103,7 +102,7 @@ describe('User API tests', () => {
     })
 
     describe('given the password is wrong', () => {
-      it('should return a 401 error code', async () => {
+      it('should return 401 error code', async () => {
         const { status } = await api
           .post('/api/users/login')
           .send(userPayload.wrongPasswordLogin)
@@ -113,7 +112,7 @@ describe('User API tests', () => {
     })
 
     describe('given the user data is invalid', () => {
-      it('should return a 400 error code', async () => {
+      it('should return 400 error code', async () => {
         const { status } = await api
           .post('/api/users/login')
           .send(userPayload.invalidLogin)
@@ -123,7 +122,7 @@ describe('User API tests', () => {
     })
 
     describe('given the user data is incomplete', () => {
-      it('should return a 400 error code', async () => {
+      it('should return 400 error code', async () => {
         const { status } = await api
           .post('/api/users/login')
           .send(userPayload.incompleteLogin)
@@ -140,10 +139,11 @@ describe('User API tests', () => {
       const refreshToken = signRefreshToken(user.id)
 
       const userDB = await UserModel.findById(user.id)
-      if (!userDB) return
-      userDB.sessions = [...userDB.sessions, refreshToken]
-      await userDB.save()
-      expect(userDB.sessions).toContain(refreshToken)
+      if (userDB) {
+        userDB.sessions = [...userDB.sessions, refreshToken]
+        await userDB.save()
+        expect(userDB.sessions).toContain(refreshToken)
+      }
 
       await api
         .post('/api/users/logout')
@@ -153,8 +153,7 @@ describe('User API tests', () => {
         ])
 
       const updatedUser = await UserModel.findById(user.id)
-      if (!updatedUser) return
-      expect(updatedUser.sessions).not.toContain(refreshToken)
+      expect(updatedUser?.sessions).not.toContain(refreshToken)
     })
   })
 
@@ -165,10 +164,11 @@ describe('User API tests', () => {
       const refreshToken = signRefreshToken(user.id)
 
       const userDB = await UserModel.findById(user.id)
-      if (!userDB) return
-      userDB.sessions = [refreshToken, refreshToken, refreshToken]
-      await userDB.save()
-      expect(userDB.sessions.length).toBe(3)
+      if (userDB) {
+        userDB.sessions = [refreshToken, refreshToken, refreshToken]
+        await userDB.save()
+        expect(userDB.sessions.length).toBe(3)
+      }
 
       await api
         .post('/api/users/logout/all')
@@ -178,29 +178,45 @@ describe('User API tests', () => {
         ])
 
       const updatedUser = await UserModel.findById(user.id)
-      if (!updatedUser) return
-      expect(updatedUser.sessions.length).toBe(0)
+      expect(updatedUser?.sessions.length).toBe(0)
     })
   })
 
-  describe('GET /users', () => {
-    it('should return a list of users', async () => {
-      const { status, body } = await api
-        .get('/api/users')
-        .set('Cookie', user.cookies)
+  describe('GET /search', () => {
+    describe('given the query string is correct', () => {
+      it('should return a list of matching users', async () => {
+        const { status, body } = await api
+          .get('/api/users/search')
+          .set('Cookie', user.cookies)
+          .query({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            limit: 10,
+          })
 
-      expect(status).toBe(200)
-      expect(body).toBeInstanceOf(Array)
+        expect(status).toBe(200)
+        expect(body).toBeInstanceOf(Array)
+      })
+    })
+
+    describe('given the query string is incorrect', () => {
+      it('should return 400 error code', async () => {
+        const { status } = await api
+          .get('/api/users/search')
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(400)
+      })
     })
   })
 
-  describe('GET /users/:id', () => {
+  describe('GET /users/profile/:id', () => {
     describe('given the user exists', () => {
       it('should return user data', async () => {
         const user = users[++i]
 
         const { status, body } = await api
-          .get(`/api/users/${user.id}`)
+          .get(`/api/users/profile/${user.id}`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
@@ -209,7 +225,7 @@ describe('User API tests', () => {
     })
 
     describe('given the user does not exist', () => {
-      it('should return a 404 error code', async () => {
+      it('should return 404 error code', async () => {
         const fakeId = new Types.ObjectId()
 
         const { status } = await api
@@ -227,12 +243,12 @@ describe('User API tests', () => {
         const user = users[++i]
         const requestedUser = users[++i]
 
-        const { status, body: requestedUserUpdated } = await api
+        const { status, body: requestedupdatedUser } = await api
           .patch(`/api/users/${requestedUser.id}/friend/request`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)
-        expect(requestedUserUpdated.friendRequests).toContain(user.id)
+        expect(requestedupdatedUser.friendRequests).toContain(user.id)
       })
     })
 
@@ -307,18 +323,23 @@ describe('User API tests', () => {
           .patch(`/api/users/${user.id}/friend/request`)
           .set('Cookie', acceptedUser.cookies)
 
-        const { status, body: acceptedUserUpdated } = await api
+        const { status, body: updatedAcceptedUser } = await api
           .patch(`/api/users/${acceptedUser.id}/friend/accept`)
           .set('Cookie', user.cookies)
 
-        const { body: userUpdated } = await api
-          .get(`/api/users/${user.id}`)
-          .set('Cookie', user.cookies)
+        const updatedUser = await UserModel.findById(user.id)
+
+        const updatedUserFriends = updatedUser?.friends.map((id) =>
+          id.toString()
+        )
+        const updatedUserFriendRequests = updatedUser?.friendRequests.map(
+          (id) => id.toString()
+        )
 
         expect(status).toBe(200)
-        expect(userUpdated.friends).toContain(acceptedUser.id)
-        expect(acceptedUserUpdated.friends).toContain(user.id)
-        expect(userUpdated.friendRequests).not.toContain(acceptedUser.id)
+        expect(updatedAcceptedUser.friends).toContain(user.id)
+        expect(updatedUserFriends).toContain(acceptedUser.id)
+        expect(updatedUserFriendRequests).not.toContain(acceptedUser.id)
       })
     })
 
@@ -362,12 +383,10 @@ describe('User API tests', () => {
           .patch(`/api/users/${rejectedUser.id}/friend/reject`)
           .set('Cookie', user.cookies)
 
-        const { body: userUpdated } = await api
-          .get(`/api/users/${user.id}`)
-          .set('Cookie', user.cookies)
+        const updatedUser = await UserModel.findById(user.id)
 
         expect(status).toBe(200)
-        expect(userUpdated.friendRequests).not.toContain(rejectedUser.id)
+        expect(updatedUser?.friendRequests).not.toContain(rejectedUser.id)
       })
     })
 
@@ -411,17 +430,19 @@ describe('User API tests', () => {
           .patch(`/api/users/${user.id}/friend/accept`)
           .set('Cookie', removedUser.cookies)
 
-        const { status, body: removedUserUpdated } = await api
+        const { status, body: updatedRemovedUser } = await api
           .patch(`/api/users/${removedUser.id}/friend/remove`)
           .set('Cookie', user.cookies)
 
-        const { body: userUpdated } = await api
-          .get(`/api/users/${user.id}`)
-          .set('Cookie', user.cookies)
+        const updatedUser = await UserModel.findById(user.id)
+
+        const updatedUserFriends = updatedUser?.friends.map((id) =>
+          id.toString()
+        )
 
         expect(status).toBe(200)
-        expect(userUpdated.friends).not.toContain(removedUser.id)
-        expect(removedUserUpdated.friends).not.toContain(user.id)
+        expect(updatedUserFriends).not.toContain(removedUser.id)
+        expect(updatedRemovedUser.friends).not.toContain(user.id)
       })
     })
 

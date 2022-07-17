@@ -1,10 +1,11 @@
-import { connectTestingDB } from './utils/testingDB'
 import request from 'supertest'
+
 import app from '../app'
-import { seedDB } from './utils/seedDB'
+import PostModel from '../models/post.model'
 import { ITestPost, ITestUser } from './utils/factories'
 import { commentPayload } from './utils/payloads'
-import PostModel from '../models/post.model'
+import { seedDB } from './utils/seedDB'
+import { connectTestingDB } from './utils/testingDB'
 
 const api = request(app)
 

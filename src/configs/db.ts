@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+
 import { MONGO_URI } from './constants'
 
-export const connectDatabase = async () => {
+export const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URI)
 

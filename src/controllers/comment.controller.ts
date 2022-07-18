@@ -12,4 +12,12 @@ export default class CommentController {
 
     res.json(comment)
   }
+
+  static async get(req: Request, res: Response) {
+    const { postId } = req.params
+
+    const comments = await CommentService.get(postId)
+
+    res.json(comments)
+  }
 }

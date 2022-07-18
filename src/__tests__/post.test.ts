@@ -14,7 +14,6 @@ const api = request(app)
 describe('Post API tests', () => {
   let user: ITestUser
   let posts: ITestPost[]
-  let post: ITestPost
   let i = 0
 
   beforeAll(async () => {
@@ -22,7 +21,6 @@ describe('Post API tests', () => {
     const db = await seedDB()
     user = db.users[0]
     posts = db.posts
-    post = posts[0]
   })
 
   afterAll(async () => {
@@ -118,31 +116,6 @@ describe('Post API tests', () => {
           .set('Cookie', user.cookies)
 
         expect(status).toBe(400)
-      })
-    })
-  })
-
-  describe('GET /posts/:id/comments', () => {
-    describe('given the post exists', () => {
-      it(`should return a list of post's comments`, async () => {
-        const { status, body } = await api
-          .get(`/api/posts/${post.id}/comments`)
-          .set('Cookie', user.cookies)
-
-        expect(status).toBe(200)
-        expect(body).toBeInstanceOf(Array)
-      })
-    })
-
-    describe('given the post does not exist', () => {
-      it(`should return 404 error code`, async () => {
-        const fakeId = new Types.ObjectId()
-
-        const { status } = await api
-          .get(`/api/posts/${fakeId}/comments`)
-          .set('Cookie', user.cookies)
-
-        expect(status).toBe(404)
       })
     })
   })

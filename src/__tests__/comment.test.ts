@@ -1,3 +1,4 @@
+import { Types } from 'mongoose'
 import request from 'supertest'
 
 import app from '../app'
@@ -20,7 +21,7 @@ describe('Comment API tests', () => {
     post = db.posts[0]
   })
 
-  describe('POST /comments', () => {
+  describe('POST /comments/:postId', () => {
     describe('given the comment data is correct', () => {
       it('should add comment to post and return comment data', async () => {
         const { status, body } = await api
@@ -55,6 +56,31 @@ describe('Comment API tests', () => {
           .send(commentPayload.incompleteCreation)
 
         expect(status).toBe(400)
+      })
+    })
+  })
+
+  describe('GET /comments/:postId', () => {
+    describe('given the post exists', () => {
+      it(`should return a list of post's comments`, async () => {
+        const { status, body } = await api
+          .get(`/api/comments/${post.id}`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(200)
+        expect(body).toBeInstanceOf(Array)
+      })
+    })
+
+    describe('given the post does not exist', () => {
+      it(`should return 404 error code`, async () => {
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .get(`/api/comments/${fakeId}`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(404)
       })
     })
   })

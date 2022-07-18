@@ -62,19 +62,6 @@ export default class PostService {
     return posts
   }
 
-  static async getComments(postId: string) {
-    const post = await PostModel.findById(postId).populate({
-      path: 'comments',
-      populate: {
-        path: 'author',
-        select: ['firstName', 'lastName', 'image'],
-      },
-    })
-    if (!post) throw new NotFound('Post not found')
-
-    return post.comments
-  }
-
   static async like(postId: string, userId: string) {
     const post = await PostModel.findById(postId)
     const user = await UserModel.findById(userId)

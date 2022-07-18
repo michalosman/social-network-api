@@ -17,4 +17,6 @@ commentRouter.post(
   CommentController.create
 )
 
+commentRouter.get('/:postId', validateParams, CommentController.get)
+
 export default commentRouter

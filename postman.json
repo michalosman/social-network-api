@@ -536,48 +536,6 @@
 					"response": []
 				},
 				{
-					"name": "Get post's comments",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/posts/{{postId}}/comments",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"posts",
-								"{{postId}}",
-								"comments"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Like",
 					"request": {
 						"method": "PATCH",
@@ -643,6 +601,47 @@
 					],
 					"request": {
 						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/comments/{{postId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"comments",
+								"{{postId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get post's comments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",

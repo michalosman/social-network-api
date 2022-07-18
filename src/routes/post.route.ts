@@ -14,7 +14,6 @@ postRouter.post('/', validateBody(createPostSchema), PostController.create)
 
 postRouter.get('/feed', PostController.getFeed)
 postRouter.get('/timeline/:userId', validateParams, PostController.getTimeline)
-postRouter.get('/:id/comments', validateParams, PostController.getComments)
 
 postRouter.patch('/:id/like', validateParams, PostController.like)
 postRouter.patch('/:id/unlike', validateParams, PostController.unlike)

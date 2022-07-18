@@ -38,14 +38,6 @@ export default class PostController {
     res.json(posts)
   }
 
-  static async getComments(req: Request, res: Response) {
-    const { id: postId } = req.params
-
-    const comments = await PostService.getComments(postId)
-
-    res.json(comments)
-  }
-
   static async like(req: Request, res: Response) {
     const { id: userId } = res.locals.user
     const { id: postId } = req.params

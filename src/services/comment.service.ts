@@ -22,4 +22,20 @@ export default class CommentService {
 
     return comment
   }
+
+  static async get(postId: string) {
+    const post = await PostModel.findById(postId)
+    if (!post) throw new NotFound('Post not found')
+
+    const comments = await CommentModel.find({ post: postId })
+      .populate({
+        path: 'author',
+        select: ['firstName', 'lastName', 'image'],
+      })
+      .sort({
+        createdAt: 'desc',
+      })
+
+    return comments
+  }
 }

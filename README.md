@@ -1,9 +1,93 @@
-# Facebook API
+# Facebook Clone API
 
-## Error handling
+This is an API part of a Facebook Clone which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
 
-### HTTP error classes 
-Make throwing errors more intuitive and explicit
+## Endpoints
+
+### Users
+
+| Description                 | Method | URL                           |
+| --------------------------- | ------ | ----------------------------- |
+| Register                    | POST   | /api/users/register           |
+| Login                       | POST   | /api/users/login              |
+| Logout from current session | POST   | /api/users/logout             |
+| Logout from all sessions    | POST   | /api/users/logout/all         |
+| Search users                | GET    | /api/users/search             |
+| Get other user's profile    | GET    | /api/users/profile/:id        |
+| Request friend              | PATCH  | /api/users/:id/friend/request |
+| Accept friend               | PATCH  | /api/users/:id/friend/accept  |
+| Reject friend               | PATCH  | /api/users/:id/friend/reject  |
+| Remove friend               | PATCH  | /api/users/:id/friend/remove  |
+
+### Posts
+
+| Description               | Method | URL                         |
+| ------------------------- | ------ | --------------------------- |
+| Create post               | POST   | /api/posts                  |
+| Get own feed              | GET    | /api/posts/feed             |
+| Get other user's timeline | GET    | /api/posts/timeline/:userId |
+| Like post                 | PATCH  | /api/posts/:id/like         |
+| Unlike post               | PATCH  | /api/posts/:id/unlike       |
+
+### Comments
+
+| Description         | Method | URL                   |
+| ------------------- | ------ | --------------------- |
+| Create comment      | POST   | /api/comments/:postId |
+| Get post's comments | GET    | /api/comments/:postId |
+
+## Technologies used
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [JWT](https://jwt.io/)
+- [zod](https://zod.dev/)
+- [supertest](https://github.com/visionmedia/supertest)
+- [mongodb-memory-server](https://github.com/nodkz/mongodb-memory-server)
+- [Postman](https://www.postman.com/)
+
+## Getting started
+
+### Clone repository
+
+```
+git clone https://github.com/michalosman/facebook-api.git
+cd facebook-api
+```
+
+### Set up environment variables
+
+```
+PORT=<The port the server will run on, e.g. 5000>
+MONGO_URI_PROD=<URI used to connect to a production MongoDB database>
+MONGO_URI_DEV=<URI used to connect to a development MongoDB database>
+ACCESS_TOKEN_PUBLIC_KEY=<Public access token RSA key>
+ACCESS_TOKEN_PRIVATE_KEY=<Private access token RSA key>
+REFRESH_TOKEN_PUBLIC_KEY=<Public refresh token RSA key>
+REFRESH_TOKEN_PRIVATE_KEY=<Private refresh token RSA key>
+```
+
+### Install packages and start server
+
+```
+npm i
+npm start
+```
+
+## Notes
+
+### Database schema
+
+![database schema](https://user-images.githubusercontent.com/40360401/179564502-f6736f42-4671-4c65-8b10-2c29d655dfcb.png)
+
+### Error handling
+
+#### HTTP error classes
+
+Makes throwing errors more intuitive and explicit
 
 ```js
 // Before
@@ -19,7 +103,8 @@ if (doesExist) {
 }
 ```
 
-### Error handler middleware
+#### Error handler middleware
+
 Handles all errors in one place
 
 ```js
@@ -47,7 +132,8 @@ try {
 }
 ```
 
-### express-async-errors library
+#### express-async-errors library
+
 Passes thrown errors straight to error handler
 
 ```js
@@ -66,10 +152,16 @@ const user = await UserService.register(req.body) // this will throw
 res.json({ data: user })
 ```
 
-## Authentication
+### Authentication
 
-### Process flowchart
+For users authentication I used JWT tokens which are stored on client side as cookies (accessToken & refreshToken). The access token expires every 5 minutes and is used for short term authentication. The refresh token expires every year and is used to refresh access tokens.
 
-![jwt](https://user-images.githubusercontent.com/40360401/167729479-cecbc8fc-56ef-4f13-882b-c0eff7437a0a.png)
+#### Security
 
-// TODO elaborate on the aproach to authentication
+Refresh tokens are stored in database and are verified on each access token refresh. If refresh token gets stolen user can use "Logout from all sessions" option to remove all tokens from database so they can't be used to refresh the access token anymore.
+
+#### Flow
+
+The diagram below represents the flow of processing authenticated requests.
+
+![JWT](https://user-images.githubusercontent.com/40360401/179546347-13e54e46-5c28-45bf-b2e5-bbc5d01a58d0.png)

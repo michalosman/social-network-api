@@ -2,8 +2,7 @@ import 'express-async-errors'
 
 import PostModel from '../models/post.model'
 import UserModel from '../models/user.model'
-import { NotFound } from '../utils/errors'
-import { BadRequest, Conflict } from './../utils/errors'
+import { BadRequest, Conflict, NotFound } from '../utils/errors'
 
 export default class PostService {
   static async create(text: string, authorId: string) {
@@ -19,7 +18,7 @@ export default class PostService {
   }
 
   static async getFeed(userId: string, offset: number, limit: number) {
-    if (offset < 0 || limit < 0 || isNaN(offset) || isNaN(limit))
+    if (offset < 0 || limit < 0 || Number.isNaN(offset) || Number.isNaN(limit))
       throw new BadRequest('Must provide offset and limit in query string')
 
     const user = await UserModel.findById(userId)
@@ -42,7 +41,7 @@ export default class PostService {
   }
 
   static async getTimeline(userId: string, offset: number, limit: number) {
-    if (offset < 0 || limit < 0 || isNaN(offset) || isNaN(limit))
+    if (offset < 0 || limit < 0 || Number.isNaN(offset) || Number.isNaN(limit))
       throw new BadRequest('Must provide offset and limit in query string')
 
     const user = await UserModel.findById(userId)

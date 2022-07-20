@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import {
   createTestComment,
   createTestPost,
@@ -7,7 +8,7 @@ import {
   ITestUser,
 } from './factories'
 
-export const seedDB = async () => {
+const seedDB = async () => {
   const users: ITestUser[] = []
   const posts: ITestPost[] = []
   const comments: ITestComment[] = []
@@ -27,3 +28,5 @@ export const seedDB = async () => {
     comments,
   }
 }
+
+export default seedDB

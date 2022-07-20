@@ -1,3 +1,6 @@
+/* eslint-disable max-classes-per-file */
+/* eslint-disable @typescript-eslint/lines-between-class-members */
+
 export abstract class HttpError extends Error {
   code: number
   message: string

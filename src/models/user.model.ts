@@ -1,5 +1,6 @@
+/* eslint-disable func-names */
 import bcrypt from 'bcrypt'
-import { model,Schema, Types } from 'mongoose'
+import { model, Schema, Types } from 'mongoose'
 
 export interface IUser {
   firstName: string
@@ -76,7 +77,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ) {
-  return await bcrypt.compare(candidatePassword, this.password)
+  return bcrypt.compare(candidatePassword, this.password)
 }
 
 const UserModel = model<IUserDocument>('User', userSchema)

@@ -2,12 +2,12 @@ import _ from 'lodash'
 import { Types } from 'mongoose'
 import request from 'supertest'
 
-import app from '../app'
-import UserModel from '../models/user.model'
-import { signAccessToken, signRefreshToken } from './../utils/jwt'
+import app from '../src/app'
+import UserModel from '../src/models/user.model'
+import { signAccessToken, signRefreshToken } from '../src/utils/jwt'
 import { ITestUser } from './utils/factories'
 import { userPayload } from './utils/payloads'
-import { seedDB } from './utils/seedDB'
+import seedDB from './utils/seedDB'
 import { connectTestingDB, disconnectTestingDB } from './utils/testingDB'
 
 const api = request(app)
@@ -139,11 +139,10 @@ describe('User API tests', () => {
       const refreshToken = signRefreshToken(user.id)
 
       const userDB = await UserModel.findById(user.id)
-      if (userDB) {
-        userDB.sessions = [...userDB.sessions, refreshToken]
-        await userDB.save()
-        expect(userDB.sessions).toContain(refreshToken)
-      }
+      if (!userDB) return
+      userDB.sessions = [...userDB.sessions, refreshToken]
+      await userDB.save()
+      expect(userDB.sessions).toContain(refreshToken)
 
       await api
         .post('/api/users/logout')
@@ -164,11 +163,10 @@ describe('User API tests', () => {
       const refreshToken = signRefreshToken(user.id)
 
       const userDB = await UserModel.findById(user.id)
-      if (userDB) {
-        userDB.sessions = [refreshToken, refreshToken, refreshToken]
-        await userDB.save()
-        expect(userDB.sessions.length).toBe(3)
-      }
+      if (!userDB) return
+      userDB.sessions = [refreshToken, refreshToken, refreshToken]
+      await userDB.save()
+      expect(userDB.sessions.length).toBe(3)
 
       await api
         .post('/api/users/logout/all')

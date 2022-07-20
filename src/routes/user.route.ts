@@ -4,7 +4,7 @@ import UserController from '../controllers/user.controller'
 import auth from '../middlewares/auth'
 import validateBody from '../middlewares/validateBody'
 import validateParams from '../middlewares/validateParams'
-import { loginUserSchema, registerUserSchema } from './../schemas/user.schema'
+import { loginUserSchema, registerUserSchema } from '../schemas/user.schema'
 
 const userRouter = Router()
 

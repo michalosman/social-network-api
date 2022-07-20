@@ -1,6 +1,6 @@
 import 'express-async-errors'
 
-import { NextFunction,Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 import { Unauthorized } from '../utils/errors'
 

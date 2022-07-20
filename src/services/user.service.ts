@@ -1,10 +1,9 @@
 import 'express-async-errors'
 
-import { Conflict, NotFound } from '../utils/errors'
+import UserModel, { IUser } from '../models/user.model'
+import { BadRequest, Conflict, NotFound, Unauthorized } from '../utils/errors'
 import { signAccessToken, signRefreshToken } from '../utils/jwt'
 import { sanitizeUser } from '../utils/sanitization'
-import UserModel, { IUser } from './../models/user.model'
-import { BadRequest, Unauthorized } from './../utils/errors'
 
 export default class UserService {
   static async register(userData: IUser) {
@@ -77,7 +76,7 @@ export default class UserService {
   }
 
   static async getSearched(firstName: string, lastName: string, limit: number) {
-    if (limit < 0 || isNaN(limit))
+    if (limit < 0 || Number.isNaN(limit))
       throw new BadRequest('Must provide limit in query string')
 
     const users = await UserModel.find({

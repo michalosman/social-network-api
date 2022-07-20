@@ -1,11 +1,11 @@
 import { Types } from 'mongoose'
 import request from 'supertest'
 
-import app from '../app'
-import PostModel from '../models/post.model'
+import app from '../src/app'
+import PostModel from '../src/models/post.model'
 import { ITestPost, ITestUser } from './utils/factories'
 import { commentPayload } from './utils/payloads'
-import { seedDB } from './utils/seedDB'
+import seedDB from './utils/seedDB'
 import { connectTestingDB } from './utils/testingDB'
 
 const api = request(app)

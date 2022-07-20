@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import 'express-async-errors'
 
-import { NextFunction,Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 import { ACCESS_TOKEN } from '../configs/constants'
 import UserModel from '../models/user.model'
@@ -38,32 +37,25 @@ const validateToken = async (
     // @ts-ignore
     const { id: userId } = refreshPayload
 
-    const isSessionValid = await validateSession(userId, refreshToken)
+    const user = await UserModel.findById(userId)
+    if (!user) throw new NotFound('User not found')
 
-    if (!isSessionValid) return next()
+    const isSessionValid = Boolean(
+      user.sessions.find((token) => token === refreshToken)
+    )
 
-    const newAccessToken = signAccessToken(userId)
+    if (isSessionValid) {
+      const newAccessToken = signAccessToken(userId)
 
-    res.cookie('accessToken', newAccessToken, {
-      maxAge: ACCESS_TOKEN.COOKIE_TTL,
-      httpOnly: true,
-    })
+      res.cookie('accessToken', newAccessToken, {
+        maxAge: ACCESS_TOKEN.COOKIE_TTL,
+        httpOnly: true,
+      })
 
-    res.locals.user = refreshPayload
-
-    return next()
+      res.locals.user = refreshPayload
+    }
   }
-
   return next()
-}
-
-const validateSession = async (userId: string, refreshToken: string) => {
-  const user = await UserModel.findById(userId)
-  if (!user) throw new NotFound('User not found')
-
-  const isSessionValid = user.sessions.find((token) => token === refreshToken)
-
-  return Boolean(isSessionValid)
 }
 
 export default validateToken

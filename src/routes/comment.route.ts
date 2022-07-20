@@ -4,7 +4,7 @@ import CommentController from '../controllers/comment.controller'
 import auth from '../middlewares/auth'
 import validateBody from '../middlewares/validateBody'
 import validateParams from '../middlewares/validateParams'
-import { createCommentSchema } from './../schemas/comment.schema'
+import { createCommentSchema } from '../schemas/comment.schema'
 
 const commentRouter = Router()
 

@@ -11,6 +11,7 @@ export const connectTestingDB = async () => {
     virtuals: true,
     versionKey: false,
     transform: (doc, converted) => {
+      // eslint-disable-next-line no-param-reassign, no-underscore-dangle
       delete converted._id
     },
   })

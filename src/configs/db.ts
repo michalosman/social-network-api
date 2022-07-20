@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose'
 
 import { MONGO_URI } from './constants'
 
-export const connectDB = async () => {
+const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URI)
 
@@ -10,6 +11,7 @@ export const connectDB = async () => {
       virtuals: true,
       versionKey: false,
       transform: (doc, converted) => {
+        // eslint-disable-next-line no-underscore-dangle, no-param-reassign
         delete converted._id
       },
     })
@@ -19,3 +21,5 @@ export const connectDB = async () => {
     console.log(e)
   }
 }
+
+export default connectDB

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { z } from 'zod'
 
 export const createCommentSchema = z.object({

@@ -54,8 +54,8 @@ This is an API part of a Facebook Clone which I made as a [final project](https:
 ### Clone repository
 
 ```
-git clone https://github.com/michalosman/facebook-api.git
-cd facebook-api
+git clone https://github.com/michalosman/facebook-clone-api.git
+cd facebook-clone-api
 ```
 
 ### Set up environment variables

@@ -2,6 +2,8 @@ import 'dotenv/config'
 
 export const PORT = process.env.PORT || 5000
 
+export const NODE_ENV = process.env.NODE_ENV || 'development'
+
 export const MONGO_URI =
   process.env.NODE_ENV === 'production'
     ? (process.env.MONGO_URI_PROD as string)

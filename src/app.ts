@@ -1,6 +1,8 @@
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import express from 'express'
 
+import { CLIENT_URL } from './configs/constants'
 import errorHandler from './middlewares/errorHandler'
 import validateToken from './middlewares/validateToken'
 import commentRouter from './routes/comment.route'
@@ -13,6 +15,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(validateToken)
+app.use(
+  cors({
+    origin: CLIENT_URL,
+  })
+)
 
 app.use('/api/users', userRouter)
 app.use('/api/posts', postRouter)

@@ -2,6 +2,7 @@ import CommentModel from '../models/comment.model'
 import PostModel from '../models/post.model'
 import UserModel from '../models/user.model'
 import { NotFound } from '../utils/errors'
+import { sanitizeUser } from '../utils/sanitization'
 
 export default class CommentService {
   static async create(text: string, authorId: string, postId: string) {
@@ -20,7 +21,7 @@ export default class CommentService {
     post.comments = [...post.comments, comment.id]
     await post.save()
 
-    return comment
+    return { ...comment.toJSON(), author: sanitizeUser(author) }
   }
 
   static async get(postId: string) {
@@ -28,10 +29,7 @@ export default class CommentService {
     if (!post) throw new NotFound('Post not found')
 
     const comments = await CommentModel.find({ post: postId })
-      .populate({
-        path: 'author',
-        select: ['firstName', 'lastName', 'image'],
-      })
+      .populate({ path: 'author', select: ['-password', '-sessions'] })
       .sort({
         createdAt: 'desc',
       })

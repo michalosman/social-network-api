@@ -233,6 +233,63 @@
 					"response": []
 				},
 				{
+					"name": "Get current user data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/users",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get other user data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/users/{{otherUserId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"users",
+								"{{otherUserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Search users",
 					"request": {
 						"method": "GET",
@@ -259,36 +316,6 @@
 									"key": "limit",
 									"value": "10"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get user's profile",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/profile/{{otherUserId}}",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"profile",
-								"{{otherUserId}}"
 							]
 						}
 					},
@@ -392,7 +419,7 @@
 			"name": "Post",
 			"item": [
 				{
-					"name": "Create",
+					"name": "Create post",
 					"event": [
 						{
 							"listen": "test",
@@ -433,7 +460,7 @@
 					"response": []
 				},
 				{
-					"name": "Get user's feed",
+					"name": "Get own feed",
 					"event": [
 						{
 							"listen": "test",
@@ -453,7 +480,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -484,7 +511,7 @@
 					"response": []
 				},
 				{
-					"name": "Get user's timeline",
+					"name": "Get user timeline",
 					"event": [
 						{
 							"listen": "test",
@@ -504,7 +531,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -536,13 +563,13 @@
 					"response": []
 				},
 				{
-					"name": "Like",
+					"name": "Like post",
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    text: 'Sample text',\r\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{endpoint}}/posts/{{postId}}/like",
@@ -559,13 +586,13 @@
 					"response": []
 				},
 				{
-					"name": "Unlike",
+					"name": "Unlike post",
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    text: 'Sample text',\r\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{endpoint}}/posts/{{postId}}/unlike",
@@ -625,7 +652,7 @@
 					"response": []
 				},
 				{
-					"name": "Get post's comments",
+					"name": "Get post comments",
 					"event": [
 						{
 							"listen": "test",
@@ -645,7 +672,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -3,6 +3,7 @@ import 'express-async-errors'
 import PostModel from '../models/post.model'
 import UserModel from '../models/user.model'
 import { BadRequest, Conflict, NotFound } from '../utils/errors'
+import { sanitizeUser } from '../utils/sanitization'
 
 export default class PostService {
   static async create(text: string, authorId: string) {
@@ -14,7 +15,7 @@ export default class PostService {
     author.posts = [...author.posts, post.id]
     await author.save()
 
-    return post
+    return { ...post.toJSON(), author: sanitizeUser(author) }
   }
 
   static async getFeed(userId: string, offset: number, limit: number) {
@@ -25,10 +26,7 @@ export default class PostService {
     if (!user) throw new NotFound('User not found')
 
     const posts = await PostModel.find()
-      .populate({
-        path: 'author',
-        select: ['firstName', 'lastName', 'image'],
-      })
+      .populate({ path: 'author', select: ['-password', '-sessions'] })
       .where('author')
       .in([...user.friends, user.id])
       .sort({
@@ -48,10 +46,7 @@ export default class PostService {
     if (!user) throw new NotFound('User not found')
 
     const posts = await PostModel.find({ author: user.id })
-      .populate({
-        path: 'author',
-        select: ['firstName', 'lastName', 'image'],
-      })
+      .populate({ path: 'author', select: ['-password', '-sessions'] })
       .sort({
         createdAt: 'desc',
       })

@@ -5,9 +5,23 @@ import UserService from '../services/user.service'
 
 export default class UserController {
   static async register(req: Request, res: Response) {
-    const userData = req.body
+    const { firstName, lastName, email, password } = req.body
 
-    const user = await UserService.register(userData)
+    const { accessToken, refreshToken, ...user } = await UserService.register(
+      firstName,
+      lastName,
+      email,
+      password
+    )
+
+    res.cookie('accessToken', accessToken, {
+      maxAge: ACCESS_TOKEN.COOKIE_TTL,
+      httpOnly: true,
+    })
+    res.cookie('refreshToken', refreshToken, {
+      maxAge: REFRESH_TOKEN.COOKIE_TTL,
+      httpOnly: true,
+    })
 
     res.json(user)
   }
@@ -38,14 +52,8 @@ export default class UserController {
 
     const user = await UserService.logout(id, refreshToken)
 
-    res.cookie('accessToken', '', {
-      maxAge: 0,
-      httpOnly: true,
-    })
-    res.cookie('refreshToken', '', {
-      maxAge: 0,
-      httpOnly: true,
-    })
+    res.clearCookie('accessToken')
+    res.clearCookie('refreshToken')
 
     res.json(user)
   }
@@ -55,12 +63,24 @@ export default class UserController {
 
     const user = await UserService.logoutAll(id)
 
-    res.cookie('accessToken', '', {
-      maxAge: 0,
-    })
-    res.cookie('refreshToken', '', {
-      maxAge: 0,
-    })
+    res.clearCookie('accessToken')
+    res.clearCookie('refreshToken')
+
+    res.json(user)
+  }
+
+  static async getCurrentUser(req: Request, res: Response) {
+    const { id } = res.locals.user
+
+    const user = await UserService.get(id)
+
+    res.json(user)
+  }
+
+  static async getUser(req: Request, res: Response) {
+    const { id } = req.params
+
+    const user = await UserService.get(id)
 
     res.json(user)
   }
@@ -75,14 +95,6 @@ export default class UserController {
     )
 
     res.json(users)
-  }
-
-  static async getProfile(req: Request, res: Response) {
-    const { id } = req.params
-
-    const user = await UserService.getProfile(id)
-
-    res.json(user)
   }
 
   static async requestFriend(req: Request, res: Response) {

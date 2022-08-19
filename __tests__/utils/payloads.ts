@@ -61,7 +61,7 @@ export const postPayload = {
     id: expect.any(String),
     text: 'Post test',
     image: '',
-    author: expect.any(String),
+    author: expect.any(Object),
     likes: [],
     comments: [],
     createdAt: expect.any(String),
@@ -83,7 +83,7 @@ export const commentPayload = {
   expectedOutput: {
     id: expect.any(String),
     text: 'Comment test',
-    author: expect.any(String),
+    author: expect.any(Object),
     post: expect.any(String),
     createdAt: expect.any(String),
     updatedAt: expect.any(String),

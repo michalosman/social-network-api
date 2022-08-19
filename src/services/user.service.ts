@@ -1,30 +1,44 @@
 import 'express-async-errors'
 
-import UserModel, { IUser } from '../models/user.model'
+import UserModel from '../models/user.model'
 import { BadRequest, Conflict, NotFound, Unauthorized } from '../utils/errors'
 import { signAccessToken, signRefreshToken } from '../utils/jwt'
 import { sanitizeUser } from '../utils/sanitization'
 
 export default class UserService {
-  static async register(userData: IUser) {
-    const doesExist = await UserModel.findOne({ email: userData.email })
+  static async register(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) {
+    const doesExist = await UserModel.findOne({ email })
     if (doesExist) throw new Conflict('User already exists')
 
-    const user = await UserModel.create(userData)
+    const user = await UserModel.create({
+      firstName,
+      lastName,
+      email,
+      password,
+    })
 
-    return sanitizeUser(user)
+    const accessToken = signAccessToken(user.id)
+    const refreshToken = signRefreshToken(user.id)
+
+    user.sessions = [...user.sessions, refreshToken]
+    await user.save()
+
+    return {
+      ...sanitizeUser(user),
+      accessToken,
+      refreshToken,
+    }
   }
 
   static async login(email: string, password: string) {
     const user = await UserModel.findOne({ email })
-      .populate({
-        path: 'friends',
-        select: ['firstName', 'lastName', 'image'],
-      })
-      .populate({
-        path: 'friendRequests',
-        select: ['firstName', 'lastName', 'image'],
-      })
+      .populate({ path: 'friends', select: ['-password', '-sessions'] })
+      .populate({ path: 'friendRequests', select: ['-password', '-sessions'] })
     if (!user) throw new NotFound('User does not exist')
 
     const isPasswordValid = await user.comparePassword(password)
@@ -75,6 +89,16 @@ export default class UserService {
     return sanitizeUser(user)
   }
 
+  static async get(userId: string) {
+    const user = await UserModel.findById(userId)
+      .populate({ path: 'friends', select: ['-password', '-sessions'] })
+      .populate({ path: 'friendRequests', select: ['-password', '-sessions'] })
+
+    if (!user) throw new NotFound('User not found')
+
+    return sanitizeUser(user)
+  }
+
   static async getSearched(firstName: string, lastName: string, limit: number) {
     if (limit < 0 || Number.isNaN(limit))
       throw new BadRequest('Must provide limit in query string')
@@ -83,7 +107,7 @@ export default class UserService {
       firstName: { $regex: new RegExp(firstName, 'i') },
       lastName: { $regex: new RegExp(lastName, 'i') },
     })
-      .select(['firstName', 'lastName', 'image'])
+      .select(['-password', '-sessions'])
       .limit(limit)
       .sort({
         firstName: 'asc',
@@ -91,17 +115,6 @@ export default class UserService {
       })
 
     return users
-  }
-
-  static async getProfile(userId: string) {
-    const user = await UserModel.findById(userId).populate({
-      path: 'friends',
-      select: ['firstName', 'lastName', 'image'],
-    })
-
-    if (!user) throw new NotFound('User not found')
-
-    return sanitizeUser(user)
   }
 
   static async requestFriend(userId: string, requestedId: string) {

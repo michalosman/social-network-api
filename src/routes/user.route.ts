@@ -18,7 +18,8 @@ userRouter.post('/logout', auth, UserController.logout)
 userRouter.post('/logout/all', auth, UserController.logoutAll)
 
 userRouter.get('/search', auth, UserController.getSearched)
-userRouter.get('/profile/:id', auth, validateParams, UserController.getProfile)
+userRouter.get('/', auth, UserController.getCurrentUser)
+userRouter.get('/:id', auth, validateParams, UserController.getUser)
 
 userRouter.patch(
   '/:id/friend/request',

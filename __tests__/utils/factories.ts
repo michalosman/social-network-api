@@ -18,7 +18,7 @@ export interface ITestComment extends IComment {
   id: string
 }
 
-export const createTestUser = async (): Promise<ITestUser> => {
+export const createTestUser = async () => {
   const user = await UserModel.create({
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
@@ -36,26 +36,25 @@ export const createTestUser = async (): Promise<ITestUser> => {
   }
 }
 
-export const createTestPost = async (user: ITestUser): Promise<ITestPost> => {
+export const createTestPost = async (user: ITestUser) => {
   const post = await PostModel.create({
     text: faker.lorem.paragraph(),
     author: user.id,
   })
+
   return {
     ...post.toJSON(),
     id: post.id,
   }
 }
 
-export const createTestComment = async (
-  user: ITestUser,
-  post: ITestPost
-): Promise<ITestComment> => {
+export const createTestComment = async (user: ITestUser, post: ITestPost) => {
   const comment = await CommentModel.create({
     text: faker.lorem.paragraph(),
     author: user.id,
     post: post.id,
   })
+
   return {
     ...comment.toJSON(),
     id: comment.id,

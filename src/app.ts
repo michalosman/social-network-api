@@ -18,6 +18,7 @@ app.use(validateToken)
 app.use(
   cors({
     origin: CLIENT_URL,
+    credentials: true,
   })
 )
 

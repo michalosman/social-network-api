@@ -12,8 +12,9 @@ This is an API part of a Facebook Clone which I made as a [final project](https:
 | Login                       | POST   | /api/users/login              |
 | Logout from current session | POST   | /api/users/logout             |
 | Logout from all sessions    | POST   | /api/users/logout/all         |
+| Get current user data       | GET    | /api/users                    |
+| Get other user profile      | GET    | /api/users/:id                |
 | Search users                | GET    | /api/users/search             |
-| Get other user's profile    | GET    | /api/users/profile/:id        |
 | Request friend              | PATCH  | /api/users/:id/friend/request |
 | Accept friend               | PATCH  | /api/users/:id/friend/accept  |
 | Reject friend               | PATCH  | /api/users/:id/friend/reject  |
@@ -21,20 +22,20 @@ This is an API part of a Facebook Clone which I made as a [final project](https:
 
 ### Posts
 
-| Description               | Method | URL                         |
-| ------------------------- | ------ | --------------------------- |
-| Create post               | POST   | /api/posts                  |
-| Get own feed              | GET    | /api/posts/feed             |
-| Get other user's timeline | GET    | /api/posts/timeline/:userId |
-| Like post                 | PATCH  | /api/posts/:id/like         |
-| Unlike post               | PATCH  | /api/posts/:id/unlike       |
+| Description             | Method | URL                         |
+| ----------------------- | ------ | --------------------------- |
+| Create post             | POST   | /api/posts                  |
+| Get own feed            | GET    | /api/posts/feed             |
+| Get other user timeline | GET    | /api/posts/timeline/:userId |
+| Like post               | PATCH  | /api/posts/:id/like         |
+| Unlike post             | PATCH  | /api/posts/:id/unlike       |
 
 ### Comments
 
-| Description         | Method | URL                   |
-| ------------------- | ------ | --------------------- |
-| Create comment      | POST   | /api/comments/:postId |
-| Get post's comments | GET    | /api/comments/:postId |
+| Description       | Method | URL                   |
+| ----------------- | ------ | --------------------- |
+| Create comment    | POST   | /api/comments/:postId |
+| Get post comments | GET    | /api/comments/:postId |
 
 ## Technologies used
 

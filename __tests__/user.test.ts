@@ -208,13 +208,40 @@ describe('User API tests', () => {
     })
   })
 
-  describe('GET /users/profile/:id', () => {
+  describe('GET /users', () => {
     describe('given the user exists', () => {
-      it('should return user data', async () => {
+      it('should return current user data', async () => {
         const user = users[++i]
 
         const { status, body } = await api
-          .get(`/api/users/profile/${user.id}`)
+          .get(`/api/users`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(200)
+        expect(body).toEqual(_.omit(user, 'password', 'sessions', 'cookies'))
+      })
+    })
+
+    describe('given the user does not exist', () => {
+      it('should return 404 error code', async () => {
+        const fakeId = new Types.ObjectId()
+
+        const { status } = await api
+          .get(`/api/users/${fakeId}`)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(404)
+      })
+    })
+  })
+
+  describe('GET /users/:id', () => {
+    describe('given the user exists', () => {
+      it('should return user profile data', async () => {
+        const user = users[++i]
+
+        const { status, body } = await api
+          .get(`/api/users/${user.id}`)
           .set('Cookie', user.cookies)
 
         expect(status).toBe(200)

@@ -26,7 +26,7 @@ export default class PostController {
   }
 
   static async getTimeline(req: Request, res: Response) {
-    const { id: userId } = res.locals.user
+    const { userId } = req.params
     const { offset, limit } = req.query
 
     const posts = await PostService.getTimeline(

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const registerUserSchema = z.object({
+const userSchema = z.object({
   firstName: z.string({
     required_error: 'First name is required',
     invalid_type_error: 'First name must be a string',
@@ -28,17 +28,4 @@ export const registerUserSchema = z.object({
     .optional(),
 })
 
-export const loginUserSchema = z.object({
-  email: z
-    .string({
-      required_error: 'Email is required',
-      invalid_type_error: 'Email must be a string',
-    })
-    .email({ message: 'Email is invalid' }),
-  password: z
-    .string({
-      required_error: 'Password is required',
-      invalid_type_error: 'Password must be a string',
-    })
-    .min(6, 'Password too short - should be at least 6 characters long'),
-})
+export default userSchema

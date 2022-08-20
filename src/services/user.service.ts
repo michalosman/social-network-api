@@ -13,7 +13,7 @@ export default class UserService {
     password: string
   ) {
     const doesExist = await UserModel.findOne({ email })
-    if (doesExist) throw new Conflict('User already exists')
+    if (doesExist) throw new Conflict('Email address is already taken')
 
     const user = await UserModel.create({
       firstName,
@@ -39,10 +39,10 @@ export default class UserService {
     const user = await UserModel.findOne({ email })
       .populate({ path: 'friends', select: ['-password', '-sessions'] })
       .populate({ path: 'friendRequests', select: ['-password', '-sessions'] })
-    if (!user) throw new NotFound('User does not exist')
+    if (!user) throw new NotFound('User with given email does not exist')
 
     const isPasswordValid = await user.comparePassword(password)
-    if (!isPasswordValid) throw new Unauthorized('Invalid password')
+    if (!isPasswordValid) throw new Unauthorized('Wrong password')
 
     const accessToken = signAccessToken(user.id)
     const refreshToken = signRefreshToken(user.id)

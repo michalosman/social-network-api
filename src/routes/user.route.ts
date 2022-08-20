@@ -4,16 +4,12 @@ import UserController from '../controllers/user.controller'
 import auth from '../middlewares/auth'
 import validateBody from '../middlewares/validateBody'
 import validateParams from '../middlewares/validateParams'
-import { loginUserSchema, registerUserSchema } from '../schemas/user.schema'
+import userSchema from '../schemas/user.schema'
 
 const userRouter = Router()
 
-userRouter.post(
-  '/register',
-  validateBody(registerUserSchema),
-  UserController.register
-)
-userRouter.post('/login', validateBody(loginUserSchema), UserController.login)
+userRouter.post('/register', validateBody(userSchema), UserController.register)
+userRouter.post('/login', UserController.login)
 userRouter.post('/logout', auth, UserController.logout)
 userRouter.post('/logout/all', auth, UserController.logoutAll)
 

@@ -8,8 +8,8 @@ const validateBody =
   (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse(req.body)
-    } catch (err) {
-      throw new BadRequest(err.errors[0].message)
+    } catch (error) {
+      throw new BadRequest(error.errors[0].message)
     }
     return next()
   }

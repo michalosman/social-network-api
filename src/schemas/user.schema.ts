@@ -35,12 +35,10 @@ export const loginUserSchema = z.object({
       invalid_type_error: 'Email must be a string',
     })
     .email({ message: 'Email is invalid' }),
-  password: z
-    .string({
-      required_error: 'Password is required',
-      invalid_type_error: 'Password must be a string',
-    })
-    .min(6, 'Password too short - should be at least 6 characters long'),
+  password: z.string({
+    required_error: 'Password is required',
+    invalid_type_error: 'Password must be a string',
+  }),
 })
 
 export const updateUserSchema = z.object({

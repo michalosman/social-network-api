@@ -54,6 +54,14 @@ export const userPayload = {
     email: 'john.doe@gmail.com',
     password: 'wrong_password',
   },
+
+  validUpdate: {
+    email: 'jane.doe@gmail.com',
+  },
+
+  invalidUpdate: {
+    email: 'wrong_mail',
+  },
 }
 
 export const postPayload = {

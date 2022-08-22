@@ -74,6 +74,20 @@ userSchema.pre('save', async function (next) {
   return next()
 })
 
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const data = this.getUpdate()
+  if (!data) return next()
+
+  // @ts-ignore
+  if (!data.password) return next()
+  // @ts-ignore
+  const hashedPassword = await bcrypt.hash(data.password, 10)
+  // @ts-ignore
+  data.password = hashedPassword
+
+  return next()
+})
+
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ) {

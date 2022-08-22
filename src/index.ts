@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
+// import mongoose from 'mongoose'
 import http from 'http'
-import mongoose from 'mongoose'
 
 import app from './app'
 import { NODE_ENV, PORT } from './configs/constants'
@@ -12,7 +12,7 @@ const server = http.createServer(app)
 connectDB()
 
 if (NODE_ENV === 'development') {
-  mongoose.connection.dropDatabase()
+  // mongoose.connection.dropDatabase()
   populateDB()
 }
 

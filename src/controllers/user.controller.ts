@@ -97,6 +97,15 @@ export default class UserController {
     res.json(users)
   }
 
+  static async update(req: Request, res: Response) {
+    const { id: userId } = res.locals.user
+    const updatedFields = req.body
+
+    const updatedUser = await UserService.update(userId, updatedFields)
+
+    res.json(updatedUser)
+  }
+
   static async requestFriend(req: Request, res: Response) {
     const { id: userId } = res.locals.user
     const { id: requestedId } = req.params

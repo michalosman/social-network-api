@@ -117,6 +117,29 @@ export default class UserService {
     return users
   }
 
+  static async update(
+    userId: string,
+    updatedFields: {
+      firstName?: string
+      lastName?: string
+      email?: string
+      password?: string
+      image?: string
+    }
+  ) {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      updatedFields,
+      {
+        new: true,
+      }
+    )
+
+    if (!updatedUser) throw new NotFound('User not found')
+
+    return sanitizeUser(updatedUser)
+  }
+
   static async requestFriend(userId: string, requestedId: string) {
     if (userId === requestedId)
       throw new BadRequest('Cannot request friend with yourself')

@@ -262,6 +262,38 @@ describe('User API tests', () => {
     })
   })
 
+  describe('PATCH /users', () => {
+    describe('given the user data is valid', () => {
+      it('should return updated user data', async () => {
+        const user = users[++i]
+
+        const { status, body } = await api
+          .patch('/api/users')
+          .send(userPayload.validUpdate)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(200)
+        expect(body).toEqual({
+          ..._.omit(user, 'password', 'sessions', 'cookies'),
+          email: userPayload.validUpdate.email,
+        })
+      })
+    })
+
+    describe('given the user data is invalid', () => {
+      it('should return 400 error code', async () => {
+        const user = users[++i]
+
+        const { status } = await api
+          .patch('/api/users')
+          .send(userPayload.invalidUpdate)
+          .set('Cookie', user.cookies)
+
+        expect(status).toBe(400)
+      })
+    })
+  })
+
   describe('PATCH /users/:id/friend/request', () => {
     describe('given the users are not friends', () => {
       it('should create a new pending friend request', async () => {

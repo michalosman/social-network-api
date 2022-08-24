@@ -12,7 +12,7 @@ const postSchema = new Schema<IPost>(
   {
     text: {
       type: String,
-      required: true,
+      default: '',
     },
     image: {
       type: String,

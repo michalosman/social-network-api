@@ -6,11 +6,11 @@ import { BadRequest, Conflict, NotFound } from '../utils/errors'
 import { sanitizeUser } from '../utils/sanitization'
 
 export default class PostService {
-  static async create(text: string, authorId: string) {
+  static async create(text: string, image: string, authorId: string) {
     const author = await UserModel.findById(authorId)
     if (!author) throw new NotFound('User not found')
 
-    const post = await PostModel.create({ text, author: author.id })
+    const post = await PostModel.create({ text, image, author: author.id })
 
     author.posts = [...author.posts, post.id]
     await author.save()

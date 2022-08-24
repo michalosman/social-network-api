@@ -5,9 +5,9 @@ import PostService from '../services/post.service'
 export default class PostController {
   static async create(req: Request, res: Response) {
     const { id: authorId } = res.locals.user
-    const { text } = req.body
+    const { text, image } = req.body
 
-    const post = await PostService.create(text, authorId)
+    const post = await PostService.create(text, image, authorId)
 
     res.json(post)
   }

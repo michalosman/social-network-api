@@ -12,7 +12,7 @@ export const MONGO_URI =
     : (process.env.MONGO_URI_DEV as string)
 
 export const ACCESS_TOKEN = {
-  TTL: '5s',
+  TTL: '5m',
   COOKIE_TTL: 3.155e10, // 1 year
   PRIVATE_KEY: process.env.ACCESS_TOKEN_PRIVATE_KEY || '',
   PUBLIC_KEY: process.env.ACCESS_TOKEN_PUBLIC_KEY || '',

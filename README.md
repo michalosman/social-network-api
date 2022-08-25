@@ -15,6 +15,7 @@ This is an API part of a Facebook Clone which I made as a [final project](https:
 | Get current user data       | GET    | /api/users                    |
 | Get other user profile      | GET    | /api/users/:id                |
 | Search users                | GET    | /api/users/search             |
+| Edit own profile            | PATCH  | /api/users                    |
 | Request friend              | PATCH  | /api/users/:id/friend/request |
 | Accept friend               | PATCH  | /api/users/:id/friend/accept  |
 | Reject friend               | PATCH  | /api/users/:id/friend/reject  |
@@ -22,13 +23,13 @@ This is an API part of a Facebook Clone which I made as a [final project](https:
 
 ### Posts
 
-| Description             | Method | URL                         |
-| ----------------------- | ------ | --------------------------- |
-| Create post             | POST   | /api/posts                  |
-| Get own feed            | GET    | /api/posts/feed             |
-| Get other user timeline | GET    | /api/posts/timeline/:userId |
-| Like post               | PATCH  | /api/posts/:id/like         |
-| Unlike post             | PATCH  | /api/posts/:id/unlike       |
+| Description       | Method | URL                         |
+| ----------------- | ------ | --------------------------- |
+| Create post       | POST   | /api/posts                  |
+| Get own feed      | GET    | /api/posts/feed             |
+| Get user timeline | GET    | /api/posts/timeline/:userId |
+| Like post         | PATCH  | /api/posts/:id/like         |
+| Unlike post       | PATCH  | /api/posts/:id/unlike       |
 
 ### Comments
 

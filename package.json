@@ -3,6 +3,9 @@
   "author": "https://github.com/michalosman",
   "version": "1.0.0",
   "main": "dist/src/index.js",
+  "engines": {
+    "node": "v16.14.2"
+  },
   "scripts": {
     "build": "tsc",
     "start": "tsc & node .",

@@ -2,6 +2,10 @@
 
 This is an API part of a Facebook Clone which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
 
+[Frontend repository](https://github.com/michalosman/facebook-clone)
+
+[Live Demo](todo) :point_left:
+
 ## Endpoints
 
 ### Users
@@ -64,8 +68,10 @@ cd facebook-clone-api
 
 ```
 PORT=<The port the server will run on, e.g. 5000>
+CLIENT_URL=<Address of the client, e.g. http://localhost:3000/>
 MONGO_URI_PROD=<URI used to connect to a production MongoDB database>
 MONGO_URI_DEV=<URI used to connect to a development MongoDB database>
+SESSION_SECRET=<Secret used to sign the session ID cookie>
 ACCESS_TOKEN_PUBLIC_KEY=<Public access token RSA key>
 ACCESS_TOKEN_PRIVATE_KEY=<Private access token RSA key>
 REFRESH_TOKEN_PUBLIC_KEY=<Public refresh token RSA key>

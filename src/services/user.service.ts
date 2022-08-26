@@ -1,7 +1,16 @@
 import 'express-async-errors'
 
+import { Types } from 'mongoose'
+
+import { MY_USER_ID, TEST_USER_ID } from '../configs/constants'
 import UserModel from '../models/user.model'
-import { BadRequest, Conflict, NotFound, Unauthorized } from '../utils/errors'
+import {
+  BadRequest,
+  Conflict,
+  MethodNotAllowed,
+  NotFound,
+  Unauthorized,
+} from '../utils/errors'
 import { signAccessToken, signRefreshToken } from '../utils/jwt'
 import { sanitizeUser } from '../utils/sanitization'
 
@@ -15,12 +24,14 @@ export default class UserService {
     const doesExist = await UserModel.findOne({ email })
     if (doesExist) throw new Conflict('Email address is already taken')
 
-    const user = await UserModel.create({
+    const user = new UserModel({
       firstName,
       lastName,
       email,
       password,
     })
+
+    if (MY_USER_ID) user.friendRequests.push(new Types.ObjectId(MY_USER_ID))
 
     const accessToken = signAccessToken(user.id)
     const refreshToken = signRefreshToken(user.id)
@@ -104,7 +115,10 @@ export default class UserService {
       throw new BadRequest('Must provide limit in query string')
 
     const users = await UserModel.find({
-      firstName: { $regex: new RegExp(firstName, 'i') },
+      $and: [
+        { firstName: { $regex: new RegExp(firstName, 'i') } },
+        { firstName: { $ne: 'Test' } },
+      ],
       lastName: { $regex: new RegExp(lastName, 'i') },
     })
       .select(['-password', '-sessions'])
@@ -127,6 +141,9 @@ export default class UserService {
       image?: string
     }
   ) {
+    if (userId === TEST_USER_ID)
+      throw new MethodNotAllowed('Cannot modify test user data')
+
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       updatedFields,
@@ -203,6 +220,9 @@ export default class UserService {
   }
 
   static async removeFriend(userId: string, removedId: string) {
+    if (userId === TEST_USER_ID)
+      throw new MethodNotAllowed('Cannot remove test user friends')
+
     const user = await UserModel.findById(userId)
     const removed = await UserModel.findById(removedId)
 

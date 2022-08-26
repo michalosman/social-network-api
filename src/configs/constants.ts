@@ -1,5 +1,9 @@
 import 'dotenv/config'
 
+export const MY_USER_ID = process.env.MY_USER_ID
+
+export const TEST_USER_ID = process.env.TEST_USER_ID
+
 export const PORT = process.env.PORT || 5000
 
 export const NODE_ENV = process.env.NODE_ENV || 'development'

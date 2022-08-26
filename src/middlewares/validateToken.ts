@@ -38,7 +38,11 @@ const validateToken = async (
     const { id: userId } = refreshPayload
 
     const user = await UserModel.findById(userId)
-    if (!user) throw new NotFound('User not found')
+    if (!user) {
+      res.clearCookie('accessToken')
+      res.clearCookie('refreshToken')
+      throw new NotFound('User not found')
+    }
 
     const isSessionValid = Boolean(
       user.sessions.find((token) => token === refreshToken)

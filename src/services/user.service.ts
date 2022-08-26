@@ -220,14 +220,14 @@ export default class UserService {
   }
 
   static async removeFriend(userId: string, removedId: string) {
-    if (userId === TEST_USER_ID)
-      throw new MethodNotAllowed('Cannot remove test user friends')
-
     const user = await UserModel.findById(userId)
     const removed = await UserModel.findById(removedId)
 
     if (!user || !removed) throw new NotFound('User not found')
     if (!user.friends.includes(removed.id)) throw new Conflict('Not friends')
+
+    if (userId === TEST_USER_ID && removed.firstName === 'Test')
+      throw new MethodNotAllowed('Cannot remove test user friends')
 
     user.friends = user.friends.filter((id) => id.toString() !== removed.id)
     await user.save()

@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
 import session from 'express-session'
+import helmet from 'helmet'
 import morgan from 'morgan'
 
 import { CLIENT_URL, NODE_ENV, SESSION_SECRET } from './configs/constants'
@@ -27,6 +28,7 @@ app.use(
   })
 )
 
+app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

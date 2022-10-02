@@ -1,10 +1,10 @@
-# Facebook Clone API
+# Odinbook API
 
-This is an API part of a Facebook Clone which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
+This is an API part of an Odinbook which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
 
-[Frontend repository](https://github.com/michalosman/facebook-clone)
+[Frontend repository](https://github.com/michalosman/odinbook)
 
-[Live Demo](https://facebook-clone-michalosman.netlify.app/) :point_left:
+[Live Demo](https://odinbook-mo.netlify.app/) :point_left:
 
 ## Endpoints
 
@@ -60,8 +60,8 @@ This is an API part of a Facebook Clone which I made as a [final project](https:
 ### Clone repository
 
 ```
-git clone https://github.com/michalosman/facebook-clone-api.git
-cd facebook-clone-api
+git clone https://github.com/michalosman/odinbook-api.git
+cd odinbook-api
 ```
 
 ### Set up environment variables

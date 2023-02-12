@@ -13,7 +13,7 @@ export const SESSION_SECRET = process.env.SESSION_SECRET || 'somesecretkey123'
 export const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000'
 
 export const MONGO_URI =
-  process.env.NODE_ENV === 'production'
+  NODE_ENV === 'production'
     ? (process.env.MONGO_URI_PROD as string)
     : (process.env.MONGO_URI_DEV as string)
 

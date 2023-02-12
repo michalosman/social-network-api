@@ -1,5 +1,5 @@
 {
-  "name": "odinbook-api",
+  "name": "social-network-api",
   "author": "https://github.com/michalosman",
   "version": "1.0.0",
   "main": "dist/src/index.js",
@@ -27,7 +27,7 @@
     "express-async-errors": "^3.1.1",
     "express-session": "^1.17.3",
     "helmet": "^6.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.3.1",
     "morgan": "^1.10.0",

@@ -1,795 +1,665 @@
 {
-	"info": {
-		"_postman_id": "1d5a9c60-0a58-4ecc-a4e9-6ee20d9cdab2",
-		"name": "Odinbook",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "18552332"
-	},
-	"item": [
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Register",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const userId = pm.response.json().id\r",
-									"\r",
-									"if(userId) {\r",
-									"    pm.collectionVariables.set('userId', userId)\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/users/register",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register (other user)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const otherUserId = pm.response.json().id\r",
-									"\r",
-									"if(otherUserId) {\r",
-									"    pm.collectionVariables.set('otherUserId', otherUserId)\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"other.{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"firstName\": \"Other {{firstName}}\",\r\n    \"lastName\": \"Other {{lastName}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/users/register",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const userId = pm.response.json().id\r",
-									"\r",
-									"if(userId) {\r",
-									"    pm.collectionVariables.set('userId', userId)\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Cookie",
-								"value": "access",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/users/login",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Login (other user)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const otherUserId = pm.response.json().id\r",
-									"\r",
-									"if(otherUserId) {\r",
-									"    pm.collectionVariables.set('otherUserId', otherUserId)\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Cookie",
-								"value": "access",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"other.{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/users/login",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Logout from current session",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/logout",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"logout"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Logout from all sessions",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/logout/all",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"logout",
-								"all"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get current user data",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get other user data",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/{{otherUserId}}",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"{{otherUserId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Search users",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/search?firstName={{firstName}}&lastName={{lastName}}&limit=10",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"search"
-							],
-							"query": [
-								{
-									"key": "firstName",
-									"value": "{{firstName}}"
-								},
-								{
-									"key": "lastName",
-									"value": "{{lastName}}"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update user",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "",
-								"value": "",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Johe\",\r\n    \"lastName\": \"Doe\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/users",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Request friend",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/{{otherUserId}}/friend/request",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"{{otherUserId}}",
-								"friend",
-								"request"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Accept friend",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/{{userId}}/friend/accept",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"{{userId}}",
-								"friend",
-								"accept"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Reject friend",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/{{userId}}/friend/reject",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"{{userId}}",
-								"friend",
-								"reject"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove friend",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "{{endpoint}}/users/{{userId}}/friend/remove",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"users",
-								"{{userId}}",
-								"friend",
-								"remove"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Post",
-			"item": [
-				{
-					"name": "Create post",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const postId = pm.response.json().id\r",
-									"\r",
-									"if(postId) {\r",
-									"    pm.collectionVariables.set('postId', postId)\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/posts",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"posts"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get own feed",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/posts/feed?offset=0&limit=10",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"posts",
-								"feed"
-							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get user timeline",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/posts/timeline/{{otherUserId}}?offset=0&limit=10",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"posts",
-								"timeline",
-								"{{otherUserId}}"
-							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Like post",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{endpoint}}/posts/{{postId}}/like",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"posts",
-								"{{postId}}",
-								"like"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Unlike post",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{endpoint}}/posts/{{postId}}/unlike",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"posts",
-								"{{postId}}",
-								"unlike"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Comment",
-			"item": [
-				{
-					"name": "Create comment",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/comments/{{postId}}",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"comments",
-								"{{postId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get post comments",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{endpoint}}/comments/{{postId}}",
-							"host": [
-								"{{endpoint}}"
-							],
-							"path": [
-								"comments",
-								"{{postId}}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "endpoint",
-			"value": "http://localhost:5000/api",
-			"type": "string"
-		},
-		{
-			"key": "email",
-			"value": "john.doe@gmail.com",
-			"type": "string"
-		},
-		{
-			"key": "password",
-			"value": "Password123!",
-			"type": "string"
-		},
-		{
-			"key": "firstName",
-			"value": "John",
-			"type": "string"
-		},
-		{
-			"key": "lastName",
-			"value": "Doe",
-			"type": "string"
-		},
-		{
-			"key": "userId",
-			"value": "<will be set on user register or login>",
-			"type": "string"
-		},
-		{
-			"key": "otherUserId",
-			"value": "<will be set on other user register or login>",
-			"type": "string"
-		},
-		{
-			"key": "postId",
-			"value": "<will be set on user post creation>",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "1d5a9c60-0a58-4ecc-a4e9-6ee20d9cdab2",
+    "name": "Social Network API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "18552332"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const userId = pm.response.json().id\r",
+                  "\r",
+                  "if(userId) {\r",
+                  "    pm.collectionVariables.set('userId', userId)\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/users/register",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register (other user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const otherUserId = pm.response.json().id\r",
+                  "\r",
+                  "if(otherUserId) {\r",
+                  "    pm.collectionVariables.set('otherUserId', otherUserId)\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"other.{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"firstName\": \"Other {{firstName}}\",\r\n    \"lastName\": \"Other {{lastName}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/users/register",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const userId = pm.response.json().id\r",
+                  "\r",
+                  "if(userId) {\r",
+                  "    pm.collectionVariables.set('userId', userId)\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "access",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/users/login",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login (other user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const otherUserId = pm.response.json().id\r",
+                  "\r",
+                  "if(otherUserId) {\r",
+                  "    pm.collectionVariables.set('otherUserId', otherUserId)\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "access",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"other.{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/users/login",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout from current session",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/logout",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout from all sessions",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/logout/all",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "logout", "all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get current user data",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users",
+              "host": ["{{endpoint}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get other user data",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/{{otherUserId}}",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "{{otherUserId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/search?firstName={{firstName}}&lastName={{lastName}}&limit=10",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "search"],
+              "query": [
+                {
+                  "key": "firstName",
+                  "value": "{{firstName}}"
+                },
+                {
+                  "key": "lastName",
+                  "value": "{{lastName}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update user",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"Johe\",\r\n    \"lastName\": \"Doe\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/users",
+              "host": ["{{endpoint}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request friend",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/{{otherUserId}}/friend/request",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "{{otherUserId}}", "friend", "request"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept friend",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/{{userId}}/friend/accept",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "{{userId}}", "friend", "accept"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject friend",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/{{userId}}/friend/reject",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "{{userId}}", "friend", "reject"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove friend",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/users/{{userId}}/friend/remove",
+              "host": ["{{endpoint}}"],
+              "path": ["users", "{{userId}}", "friend", "remove"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Post",
+      "item": [
+        {
+          "name": "Create post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const postId = pm.response.json().id\r",
+                  "\r",
+                  "if(postId) {\r",
+                  "    pm.collectionVariables.set('postId', postId)\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/posts",
+              "host": ["{{endpoint}}"],
+              "path": ["posts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get own feed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/posts/feed?offset=0&limit=10",
+              "host": ["{{endpoint}}"],
+              "path": ["posts", "feed"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user timeline",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/posts/timeline/{{otherUserId}}?offset=0&limit=10",
+              "host": ["{{endpoint}}"],
+              "path": ["posts", "timeline", "{{otherUserId}}"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Like post",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{endpoint}}/posts/{{postId}}/like",
+              "host": ["{{endpoint}}"],
+              "path": ["posts", "{{postId}}", "like"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unlike post",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{endpoint}}/posts/{{postId}}/unlike",
+              "host": ["{{endpoint}}"],
+              "path": ["posts", "{{postId}}", "unlike"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comment",
+      "item": [
+        {
+          "name": "Create comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"text\": \"Sample text\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/comments/{{postId}}",
+              "host": ["{{endpoint}}"],
+              "path": ["comments", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get post comments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/comments/{{postId}}",
+              "host": ["{{endpoint}}"],
+              "path": ["comments", "{{postId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "endpoint",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "john.doe@gmail.com",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "Password123!",
+      "type": "string"
+    },
+    {
+      "key": "firstName",
+      "value": "John",
+      "type": "string"
+    },
+    {
+      "key": "lastName",
+      "value": "Doe",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "<will be set on user register or login>",
+      "type": "string"
+    },
+    {
+      "key": "otherUserId",
+      "value": "<will be set on other user register or login>",
+      "type": "string"
+    },
+    {
+      "key": "postId",
+      "value": "<will be set on user post creation>",
+      "type": "string"
+    }
+  ]
 }

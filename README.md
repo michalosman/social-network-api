@@ -1,6 +1,6 @@
 # Social Network API
 
-This is an API part of a social network app which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
+Backend part of a social network app which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
 
 [Frontend repository](https://github.com/michalosman/social-network)
 

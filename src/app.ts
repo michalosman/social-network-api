@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import express from 'express'
+import express, { Request, Response } from 'express'
 import session from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
@@ -40,6 +40,8 @@ app.use(
     credentials: true,
   })
 )
+
+app.use('/health', (req: Request, res: Response) => res.json({ status: 'ok' }))
 
 app.use('/api/users', userRouter)
 app.use('/api/posts', postRouter)

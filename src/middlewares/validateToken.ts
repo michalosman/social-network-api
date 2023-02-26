@@ -3,7 +3,7 @@ import 'express-async-errors'
 
 import { NextFunction, Request, Response } from 'express'
 
-import { ACCESS_TOKEN } from '../configs/constants'
+import { ACCESS_TOKEN, COOKIES_OPTIONS } from '../configs/constants'
 import UserModel from '../models/user.model'
 import { NotFound } from '../utils/errors'
 import {
@@ -53,7 +53,7 @@ const validateToken = async (
 
       res.cookie('accessToken', newAccessToken, {
         maxAge: ACCESS_TOKEN.COOKIE_TTL,
-        httpOnly: true,
+        ...COOKIES_OPTIONS,
       })
 
       res.locals.user = refreshPayload

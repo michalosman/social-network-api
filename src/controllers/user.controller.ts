@@ -1,6 +1,10 @@
 import { Request, Response } from 'express'
 
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../configs/constants'
+import {
+  ACCESS_TOKEN,
+  COOKIES_OPTIONS,
+  REFRESH_TOKEN,
+} from '../configs/constants'
 import UserService from '../services/user.service'
 
 export default class UserController {
@@ -16,11 +20,11 @@ export default class UserController {
 
     res.cookie('accessToken', accessToken, {
       maxAge: ACCESS_TOKEN.COOKIE_TTL,
-      httpOnly: true,
+      ...COOKIES_OPTIONS,
     })
     res.cookie('refreshToken', refreshToken, {
       maxAge: REFRESH_TOKEN.COOKIE_TTL,
-      httpOnly: true,
+      ...COOKIES_OPTIONS,
     })
 
     res.json(user)
@@ -36,11 +40,11 @@ export default class UserController {
 
     res.cookie('accessToken', accessToken, {
       maxAge: ACCESS_TOKEN.COOKIE_TTL,
-      httpOnly: true,
+      ...COOKIES_OPTIONS,
     })
     res.cookie('refreshToken', refreshToken, {
       maxAge: REFRESH_TOKEN.COOKIE_TTL,
-      httpOnly: true,
+      ...COOKIES_OPTIONS,
     })
 
     res.json(user)

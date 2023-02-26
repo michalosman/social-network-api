@@ -30,3 +30,14 @@ export const REFRESH_TOKEN = {
   PRIVATE_KEY: process.env.REFRESH_TOKEN_PRIVATE_KEY || '',
   PUBLIC_KEY: process.env.REFRESH_TOKEN_PUBLIC_KEY || '',
 }
+
+export const COOKIES_OPTIONS = {
+  httpOnly: true,
+  sameSite: NODE_ENV === 'production' ? ('none' as 'none') : ('lax' as 'lax'),
+  secure: NODE_ENV === 'production',
+}
+
+export const CORS_OPTIONS = {
+  origin: CLIENT_URL,
+  credentials: true,
+}

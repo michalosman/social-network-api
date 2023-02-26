@@ -4,7 +4,7 @@ Backend part of a social network app which I made as a [final project](https://w
 
 [Frontend repository](https://github.com/michalosman/social-network)
 
-[Live Demo](https://social-network-michalosman.netlify.app/) :point_left:
+[Live Demo](https://social-network-michalosman.onrender.com/) :point_left:
 
 ## Endpoints
 

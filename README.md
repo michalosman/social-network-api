@@ -2,9 +2,9 @@
 
 Backend part of a social network app which I made as a [final project](https://www.theodinproject.com/lessons/nodejs-odin-book) submission for [The Odin Project](https://www.theodinproject.com/).
 
-[Frontend repository](https://github.com/michalosman/social-network)
+[Live Demo](https://michalosman-social-network.onrender.com/) :point_left:
 
-[Live Demo](https://social-network-michalosman.onrender.com/) :point_left:
+[Frontend repository](https://github.com/michalosman/social-network)
 
 ## Endpoints
 

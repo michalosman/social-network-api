@@ -56,8 +56,12 @@ export default class UserController {
 
     const user = await UserService.logout(id, refreshToken)
 
-    res.clearCookie('accessToken')
-    res.clearCookie('refreshToken')
+    res.clearCookie('accessToken', {
+      ...COOKIES_OPTIONS,
+    })
+    res.clearCookie('refreshToken', {
+      ...COOKIES_OPTIONS,
+    })
 
     res.json(user)
   }
@@ -67,8 +71,12 @@ export default class UserController {
 
     const user = await UserService.logoutAll(id)
 
-    res.clearCookie('accessToken')
-    res.clearCookie('refreshToken')
+    res.clearCookie('accessToken', {
+      ...COOKIES_OPTIONS,
+    })
+    res.clearCookie('refreshToken', {
+      ...COOKIES_OPTIONS,
+    })
 
     res.json(user)
   }

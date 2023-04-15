@@ -52,8 +52,8 @@ const validateToken = async (
       const newAccessToken = signAccessToken(userId)
 
       res.cookie('accessToken', newAccessToken, {
-        maxAge: ACCESS_TOKEN.COOKIE_TTL,
         ...COOKIES_OPTIONS,
+        maxAge: ACCESS_TOKEN.COOKIE_TTL,
       })
 
       res.locals.user = refreshPayload

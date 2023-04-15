@@ -19,12 +19,12 @@ export default class UserController {
     )
 
     res.cookie('accessToken', accessToken, {
-      maxAge: ACCESS_TOKEN.COOKIE_TTL,
       ...COOKIES_OPTIONS,
+      maxAge: ACCESS_TOKEN.COOKIE_TTL,
     })
     res.cookie('refreshToken', refreshToken, {
-      maxAge: REFRESH_TOKEN.COOKIE_TTL,
       ...COOKIES_OPTIONS,
+      maxAge: REFRESH_TOKEN.COOKIE_TTL,
     })
 
     res.json(user)
@@ -39,12 +39,12 @@ export default class UserController {
     )
 
     res.cookie('accessToken', accessToken, {
-      maxAge: ACCESS_TOKEN.COOKIE_TTL,
       ...COOKIES_OPTIONS,
+      maxAge: ACCESS_TOKEN.COOKIE_TTL,
     })
     res.cookie('refreshToken', refreshToken, {
-      maxAge: REFRESH_TOKEN.COOKIE_TTL,
       ...COOKIES_OPTIONS,
+      maxAge: REFRESH_TOKEN.COOKIE_TTL,
     })
 
     res.json(user)
@@ -56,12 +56,8 @@ export default class UserController {
 
     const user = await UserService.logout(id, refreshToken)
 
-    res.clearCookie('accessToken', {
-      ...COOKIES_OPTIONS,
-    })
-    res.clearCookie('refreshToken', {
-      ...COOKIES_OPTIONS,
-    })
+    res.clearCookie('accessToken', COOKIES_OPTIONS)
+    res.clearCookie('refreshToken', COOKIES_OPTIONS)
 
     res.json(user)
   }
@@ -71,12 +67,8 @@ export default class UserController {
 
     const user = await UserService.logoutAll(id)
 
-    res.clearCookie('accessToken', {
-      ...COOKIES_OPTIONS,
-    })
-    res.clearCookie('refreshToken', {
-      ...COOKIES_OPTIONS,
-    })
+    res.clearCookie('accessToken', COOKIES_OPTIONS)
+    res.clearCookie('refreshToken', COOKIES_OPTIONS)
 
     res.json(user)
   }

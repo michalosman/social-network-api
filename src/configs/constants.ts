@@ -1,12 +1,18 @@
 import 'dotenv/config'
 
-export const MY_USER_ID = process.env.MY_USER_ID
+export const NODE_ENV = process.env.NODE_ENV || 'development'
 
-export const TEST_USER_ID = process.env.TEST_USER_ID
+export const MY_USER_ID =
+  NODE_ENV === 'production'
+    ? process.env.MY_USER_ID_PROD
+    : process.env.MY_USER_ID_DEV
+
+export const TEST_USER_ID =
+  NODE_ENV === 'production'
+    ? process.env.TEST_USER_ID_PROD
+    : process.env.TEST_USER_ID_DEV
 
 export const PORT = process.env.PORT || 5000
-
-export const NODE_ENV = process.env.NODE_ENV || 'development'
 
 export const SESSION_SECRET = process.env.SESSION_SECRET || 'somesecretkey123'
 
